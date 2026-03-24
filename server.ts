@@ -1,6 +1,7 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
+import fs from "fs";
 
 async function startServer() {
   const app = express();
@@ -28,26 +29,46 @@ async function startServer() {
       return res.status(400).json({ error: "Invalid dictionary path. Must be within the 'resources/' directory." });
     }
 
-    // Mock solving logic: just returns some words based on input for demo
-    // In a real scenario, this would call the Clojure jar or logic
-    const mockWords = [
-      "discover", "divorce", "divorces", "sidecar", "varicose", "viscera",
-      "acid", "care", "case", "code", "core", "dare", "dear", "dice", "dive",
-      "door", "dose", "dove", "race", "read", "ride", "rise", "road", "rose",
-      "said", "save", "scar", "side", "sore", "vase", "vice", "voice"
-    ].filter(word => {
-      // Basic filter: must be at least 'size' long
-      if (word.length < size) return false;
+    // Read dictionary file
+    let dictionaryContent = "";
+    try {
+      // Try the provided path, fallback to .txt if not found
+      const fullPath = path.join(process.cwd(), dictionaryPath);
+      if (fs.existsSync(fullPath)) {
+        dictionaryContent = fs.readFileSync(fullPath, 'utf8');
+      } else if (fs.existsSync(fullPath + '.txt')) {
+        dictionaryContent = fs.readFileSync(fullPath + '.txt', 'utf8');
+      } else {
+        return res.status(404).json({ error: `Dictionary file not found: ${dictionaryPath}` });
+      }
+    } catch (err) {
+      return res.status(500).json({ error: "Failed to read dictionary file." });
+    }
+
+    const allWords = dictionaryContent.split(/\r?\n/).map(w => w.trim()).filter(w => w.length > 0);
+    const inputLetters = letters.toLowerCase();
+    const mandatoryLetter = inputLetters[0];
+    const availableLetters = inputLetters.split("");
+
+    const solvedWords = allWords.filter(word => {
+      const wordLower = word.toLowerCase();
       
-      // Must only use provided letters (if repeats is false, check counts)
-      const inputLetters = letters.toLowerCase().split("");
-      const wordLetters = word.toLowerCase().split("");
+      // 1. Minimum size
+      if (wordLower.length < size) return false;
+      
+      // 2. Must contain the mandatory letter (first letter of input)
+      if (!wordLower.includes(mandatoryLetter)) return false;
+      
+      // 3. Must only use provided letters
+      const wordLetters = wordLower.split("");
       
       if (repeats) {
-        return wordLetters.every(l => inputLetters.includes(l));
+        // Any letter in word must be in availableLetters
+        return wordLetters.every(l => availableLetters.includes(l));
       } else {
+        // Each letter in word must be available in inputLetters (count-based)
         const counts: Record<string, number> = {};
-        inputLetters.forEach(l => counts[l] = (counts[l] || 0) + 1);
+        availableLetters.forEach(l => counts[l] = (counts[l] || 0) + 1);
         for (const l of wordLetters) {
           if (!counts[l]) return false;
           counts[l]--;
@@ -56,7 +77,7 @@ async function startServer() {
       }
     }).sort((a, b) => b.length - a.length || a.localeCompare(b));
 
-    res.json(mockWords);
+    res.json(solvedWords);
   });
 
   // Vite middleware for development
