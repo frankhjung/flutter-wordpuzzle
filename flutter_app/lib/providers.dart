@@ -9,11 +9,7 @@ class SolverState {
   final bool isLoading;
   final String? error;
 
-  SolverState({
-    this.words = const [],
-    this.isLoading = false,
-    this.error,
-  });
+  SolverState({this.words = const [], this.isLoading = false, this.error});
 
   List<WordGroup> get groupedWords {
     final Map<int, List<String>> groups = {};
@@ -22,7 +18,9 @@ class SolverState {
       groups.putIfAbsent(len, () => []).add(word);
     }
     final sortedKeys = groups.keys.toList()..sort((a, b) => b.compareTo(a));
-    return sortedKeys.map((len) => WordGroup(length: len, words: groups[len]!)).toList();
+    return sortedKeys
+        .map((len) => WordGroup(length: len, words: groups[len]!))
+        .toList();
   }
 
   /// Pass [error] explicitly to update it; omit the parameter to preserve the
@@ -72,8 +70,12 @@ class SolverNotifier extends StateNotifier<SolverState> {
   }
 }
 
-final apiServiceProvider = Provider((ref) => ApiService(baseUrl: 'http://localhost:3000'));
+final apiServiceProvider = Provider(
+  (ref) => ApiService(baseUrl: 'http://localhost:3000'),
+);
 
-final solverProvider = StateNotifierProvider<SolverNotifier, SolverState>((ref) {
+final solverProvider = StateNotifierProvider<SolverNotifier, SolverState>((
+  ref,
+) {
   return SolverNotifier(ref.watch(apiServiceProvider));
 });
