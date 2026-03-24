@@ -33,7 +33,9 @@ class _SolverPageState extends ConsumerState<SolverPage> {
   final _formKey = GlobalKey<FormState>();
   final _lettersController = TextEditingController();
   final _sizeController = TextEditingController(text: '4');
-  final _dictionaryController = TextEditingController(text: 'resources/dictionary');
+  final _dictionaryController = TextEditingController(
+    text: 'resources/dictionary',
+  );
   bool _repeats = false;
 
   @override
@@ -46,12 +48,14 @@ class _SolverPageState extends ConsumerState<SolverPage> {
 
   void _solve() {
     if (_formKey.currentState!.validate()) {
-      ref.read(solverProvider.notifier).solve(
-        letters: _lettersController.text,
-        size: int.parse(_sizeController.text),
-        repeats: _repeats,
-        dictionary: _dictionaryController.text,
-      );
+      ref
+          .read(solverProvider.notifier)
+          .solve(
+            letters: _lettersController.text,
+            size: int.parse(_sizeController.text),
+            repeats: _repeats,
+            dictionary: _dictionaryController.text,
+          );
     }
   }
 
@@ -78,8 +82,13 @@ class _SolverPageState extends ConsumerState<SolverPage> {
                   children: [
                     Card(
                       elevation: 0,
-                      color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .surfaceContainerHighest
+                          .withValues(alpha: 0.3),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
@@ -130,7 +139,8 @@ class _SolverPageState extends ConsumerState<SolverPage> {
                                   child: SwitchListTile(
                                     title: const Text('Repeats'),
                                     value: _repeats,
-                                    onChanged: (val) => setState(() => _repeats = val),
+                                    onChanged: (val) =>
+                                        setState(() => _repeats = val),
                                   ),
                                 ),
                               ],
@@ -151,13 +161,19 @@ class _SolverPageState extends ConsumerState<SolverPage> {
                     const SizedBox(height: 24),
                     ElevatedButton.icon(
                       onPressed: solverState.isLoading ? null : _solve,
-                      icon: solverState.isLoading 
-                        ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                        : const Icon(Icons.search),
+                      icon: solverState.isLoading
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.search),
                       label: const Text('Solve Puzzle'),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 20),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                     ),
                     if (solverState.error != null) ...[
@@ -178,54 +194,77 @@ class _SolverPageState extends ConsumerState<SolverPage> {
           Expanded(
             flex: 3,
             child: solverState.words.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.search_off, size: 64, color: Colors.grey[300]),
-                      const SizedBox(height: 16),
-                      const Text('No results yet', style: TextStyle(color: Colors.grey)),
-                    ],
-                  ),
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.all(24),
-                  itemCount: solverState.groupedWords.length,
-                  itemBuilder: (context, index) {
-                    final group = solverState.groupedWords[index];
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Row(
-                            children: [
-                              Chip(label: Text('${group.length} Letters')),
-                              const SizedBox(width: 8),
-                              Expanded(child: Divider(color: Colors.grey[200])),
-                            ],
-                          ),
+                        Icon(
+                          Icons.search_off,
+                          size: 64,
+                          color: Colors.grey[300],
                         ),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: group.words.map((word) => Card(
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              side: BorderSide(color: Colors.grey[200]!),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                              child: Text(word, style: const TextStyle(fontWeight: FontWeight.w500)),
-                            ),
-                          )).toList(),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'No results yet',
+                          style: TextStyle(color: Colors.grey),
                         ),
-                        const SizedBox(height: 24),
                       ],
-                    );
-                  },
-                ),
+                    ),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.all(24),
+                    itemCount: solverState.groupedWords.length,
+                    itemBuilder: (context, index) {
+                      final group = solverState.groupedWords[index];
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Row(
+                              children: [
+                                Chip(label: Text('${group.length} Letters')),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Divider(color: Colors.grey[200]),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: group.words
+                                .map(
+                                  (word) => Card(
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      side: BorderSide(
+                                        color: Colors.grey[200]!,
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 8,
+                                      ),
+                                      child: Text(
+                                        word,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                          const SizedBox(height: 24),
+                        ],
+                      );
+                    },
+                  ),
           ),
         ],
       ),
