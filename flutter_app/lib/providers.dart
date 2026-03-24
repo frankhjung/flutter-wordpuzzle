@@ -1,16 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'api_service.dart';
 
+// Sentinel used to distinguish "not provided" from explicit null in copyWith.
+const _undefined = Object();
+
 class SolverState {
   final List<String> words;
   final bool isLoading;
   final String? error;
 
-  SolverState({
-    this.words = const [],
-    this.isLoading = false,
-    this.error,
-  });
+  SolverState({this.words = const [], this.isLoading = false, this.error});
 
   List<WordGroup> get groupedWords {
     final Map<int, List<String>> groups = {};
@@ -19,18 +18,22 @@ class SolverState {
       groups.putIfAbsent(len, () => []).add(word);
     }
     final sortedKeys = groups.keys.toList()..sort((a, b) => b.compareTo(a));
-    return sortedKeys.map((len) => WordGroup(length: len, words: groups[len]!)).toList();
+    return sortedKeys
+        .map((len) => WordGroup(length: len, words: groups[len]!))
+        .toList();
   }
 
+  /// Pass [error] explicitly to update it; omit the parameter to preserve the
+  /// existing value; pass `null` to clear it.
   SolverState copyWith({
     List<String>? words,
     bool? isLoading,
-    String? error,
+    Object? error = _undefined,
   }) {
     return SolverState(
       words: words ?? this.words,
       isLoading: isLoading ?? this.isLoading,
-      error: error,
+      error: identical(error, _undefined) ? this.error : error as String?,
     );
   }
 }
@@ -60,15 +63,19 @@ class SolverNotifier extends StateNotifier<SolverState> {
         repeats: repeats,
         dictionary: dictionary,
       );
-      state = state.copyWith(words: words, isLoading: false);
+      state = state.copyWith(words: words, isLoading: false, error: null);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
     }
   }
 }
 
-final apiServiceProvider = Provider((ref) => ApiService(baseUrl: 'http://localhost:3000'));
+final apiServiceProvider = Provider(
+  (ref) => ApiService(baseUrl: 'http://localhost:3000'),
+);
 
-final solverProvider = StateNotifierProvider<SolverNotifier, SolverState>((ref) {
+final solverProvider = StateNotifierProvider<SolverNotifier, SolverState>((
+  ref,
+) {
   return SolverNotifier(ref.watch(apiServiceProvider));
 });
