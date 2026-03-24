@@ -78,7 +78,7 @@ class _SolverPageState extends ConsumerState<SolverPage> {
                   children: [
                     Card(
                       elevation: 0,
-                      color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
@@ -113,6 +113,16 @@ class _SolverPageState extends ConsumerState<SolverPage> {
                                       border: OutlineInputBorder(),
                                       prefixIcon: Icon(Icons.numbers),
                                     ),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Enter a minimum size';
+                                      }
+                                      final n = int.tryParse(value);
+                                      if (n == null || n < 1) {
+                                        return 'Enter a valid size (1 or more)';
+                                      }
+                                      return null;
+                                    },
                                   ),
                                 ),
                                 const SizedBox(width: 16),

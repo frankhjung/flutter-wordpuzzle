@@ -10,10 +10,22 @@ async function startServer() {
 
   // Mock Clojure Backend API
   app.post("/api/solve", (req, res) => {
-    const { letters, size = 4, repeats = false } = req.body;
+    const { letters, size = 4, repeats = false, dictionary = 'resources/dictionary' } = req.body;
 
     if (!letters || letters.length < 7) {
       return res.status(400).json({ error: "Required 7+ letters not provided." });
+    }
+
+    if (!/^[a-zA-Z]+$/.test(letters)) {
+      return res.status(400).json({ error: "Letters must only contain alphabetical characters." });
+    }
+
+    // Validate dictionary path to prevent path traversal attacks.
+    // Normalise first to resolve '.', '..', and duplicate slashes, then
+    // require the result to stay within the 'resources/' directory.
+    const dictionaryPath = path.normalize(String(dictionary));
+    if (!dictionaryPath.startsWith('resources/')) {
+      return res.status(400).json({ error: "Invalid dictionary path. Must be within the 'resources/' directory." });
     }
 
     // Mock solving logic: just returns some words based on input for demo
