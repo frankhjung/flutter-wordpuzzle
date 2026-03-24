@@ -1,12 +1,17 @@
-name: Dev Pipeline
+---
+name: dev Pipeline
 
 on:
   push:
+    branches-ignore:
+      - "main"
     paths:
-      - 'flutter_app/**'
+      - "flutter_app/**"
   pull_request:
+    branches-ignore:
+      - "main"
     paths:
-      - 'flutter_app/**'
+      - "flutter_app/**"
 
 jobs:
   flutter:

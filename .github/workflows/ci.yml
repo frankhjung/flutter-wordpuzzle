@@ -1,5 +1,5 @@
 ---
-name: CI
+name: continuous-integration
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: '3.19.6'
+          flutter-version: "3.19.6"
 
       - name: Install dependencies
         working-directory: flutter_app
