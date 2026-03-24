@@ -1,0 +1,5 @@
+{
+  "name": "Word Puzzle Solver",
+  "description": "A web interface for solving word puzzles, supporting custom dictionaries, word sizes, and letter repetitions. Includes a mock backend for previewing.",
+  "requestFramePermissions": []
+}
