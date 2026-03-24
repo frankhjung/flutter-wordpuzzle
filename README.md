@@ -1,8 +1,12 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Word Puzzle Solver
 
-# Run and deploy your AI Studio app
+This is a UI wrapping the [clojure word puzzle solver](https://github.com/frankhjung/clojure-wordpuzzle).
+
+It was prepared using Google AI Studio using [these requirements](docs/requirements.md).
+
+See also [Key Deliverables](docs/deliverables.md).
+
+## Run and deploy your AI Studio app
 
 This contains everything you need to run your app locally.
 
