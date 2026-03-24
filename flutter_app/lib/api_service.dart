@@ -12,8 +12,9 @@ class ApiService {
     required bool repeats,
     required String dictionary,
   }) async {
+    final http.Response response;
     try {
-      final response = await http.post(
+      response = await http.post(
         Uri.parse('$baseUrl/api/solve'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
@@ -23,16 +24,17 @@ class ApiService {
           'dictionary': dictionary,
         }),
       );
-
-      if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        return data.cast<String>();
-      } else {
-        final data = jsonDecode(response.body);
-        throw Exception(data['error'] ?? 'Failed to solve puzzle');
-      }
     } catch (e) {
+      // Only transport-level I/O errors (e.g. SocketException) reach here.
       throw Exception('Network error: $e');
+    }
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body) as List<dynamic>;
+      return data.cast<String>();
+    } else {
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      throw Exception(data['error'] ?? 'Failed to solve puzzle');
     }
   }
 }
