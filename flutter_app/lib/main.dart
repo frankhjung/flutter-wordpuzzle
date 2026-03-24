@@ -82,8 +82,8 @@ class _SolverPageState extends ConsumerState<SolverPage> {
                       elevation: 0,
                       color: Theme.of(context)
                           .colorScheme
-                          .surfaceContainerHighest
-                          .withValues(alpha: 0.3),
+                          .surface
+                          .withOpacity(0.3),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
