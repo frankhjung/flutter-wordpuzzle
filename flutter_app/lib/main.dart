@@ -48,7 +48,9 @@ class _SolverPageState extends ConsumerState<SolverPage> {
 
   void _solve() {
     if (_formKey.currentState!.validate()) {
-      ref.read(solverProvider.notifier).solve(
+      ref
+          .read(solverProvider.notifier)
+          .solve(
             letters: _lettersController.text,
             size: int.parse(_sizeController.text),
             repeats: _repeats,
@@ -80,10 +82,9 @@ class _SolverPageState extends ConsumerState<SolverPage> {
                   children: [
                     Card(
                       elevation: 0,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .surface
-                          .withValues(alpha: 0.3),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.surface.withValues(alpha: 0.3),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),

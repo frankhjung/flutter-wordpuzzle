@@ -99,5 +99,6 @@ final solverProvider = NotifierProvider<SolverNotifier, SolverState>(
   SolverNotifier.new,
 );
 
-final foundWordsProvider =
-    NotifierProvider<FoundWordsNotifier, Set<String>>(FoundWordsNotifier.new);
+final foundWordsProvider = NotifierProvider<FoundWordsNotifier, Set<String>>(
+  FoundWordsNotifier.new,
+);

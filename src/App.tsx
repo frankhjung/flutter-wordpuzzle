@@ -4,17 +4,17 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { 
-  Search, 
-  Settings2, 
-  RotateCcw, 
-  AlertCircle, 
-  ChevronRight, 
+import {
+  Search,
+  Settings2,
+  RotateCcw,
+  AlertCircle,
+  ChevronRight,
   Filter,
   Type,
   Hash,
   Repeat,
-  Book
+  Book,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -30,7 +30,7 @@ export default function App() {
     letters: '',
     size: 4,
     repeats: false,
-    dictionary: 'resources/dictionary'
+    dictionary: 'resources/dictionary',
   });
   const [results, setResults] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -40,10 +40,10 @@ export default function App() {
 
   const validateInput = () => {
     if (params.letters.length < 7) {
-      return "Please enter at least 7 letters.";
+      return 'Please enter at least 7 letters.';
     }
     if (!/^[a-z]+$/.test(params.letters)) {
-      return "Only lowercase letters (a-z) are allowed.";
+      return 'Only lowercase letters (a-z) are allowed.';
     }
     return null;
   };
@@ -64,7 +64,7 @@ export default function App() {
       const response = await fetch('/api/solve', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(params)
+        body: JSON.stringify(params),
       });
 
       if (!response.ok) {
@@ -74,19 +74,21 @@ export default function App() {
 
       const data = await response.json();
       if (data.length === 0) {
-        setError("No words found for these parameters.");
+        setError('No words found for these parameters.');
       } else {
         setResults(data);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'A network error occurred.');
+      setError(
+        err instanceof Error ? err.message : 'A network error occurred.',
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const filteredResults = useMemo(() => {
-    return results.filter(word => {
+    return results.filter((word) => {
       const matchesText = word.includes(filterText.toLowerCase());
       const matchesLength = filterLength ? word.length === filterLength : true;
       return matchesText && matchesLength;
@@ -95,7 +97,7 @@ export default function App() {
 
   const groupedResults = useMemo(() => {
     const groups: Record<number, string[]> = {};
-    filteredResults.forEach(word => {
+    filteredResults.forEach((word) => {
       const len = word.length;
       if (!groups[len]) groups[len] = [];
       groups[len].push(word);
@@ -110,21 +112,28 @@ export default function App() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <header className="mb-8 text-center">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100 mb-4"
           >
             <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-            <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Word Puzzle Solver</span>
+            <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Word Puzzle Solver
+            </span>
           </motion.div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2">Find the hidden words.</h1>
-          <p className="text-gray-500 max-w-lg mx-auto">Enter your letters and configurations to discover all possible word combinations from the dictionary.</p>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2">
+            Find the hidden words.
+          </h1>
+          <p className="text-gray-500 max-w-lg mx-auto">
+            Enter your letters and configurations to discover all possible word
+            combinations from the dictionary.
+          </p>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Input Form */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="lg:col-span-5"
@@ -145,11 +154,18 @@ export default function App() {
                   <input
                     type="text"
                     value={params.letters}
-                    onChange={(e) => setParams({ ...params, letters: e.target.value.toLowerCase() })}
+                    onChange={(e) =>
+                      setParams({
+                        ...params,
+                        letters: e.target.value.toLowerCase(),
+                      })
+                    }
                     placeholder="e.g. abcdefg"
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none text-lg tracking-widest font-mono"
                   />
-                  <p className="mt-2 text-xs text-gray-400">The first letter is often the mandatory center letter.</p>
+                  <p className="mt-2 text-xs text-gray-400">
+                    The first letter is often the mandatory center letter.
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -164,7 +180,12 @@ export default function App() {
                       min="1"
                       max="15"
                       value={params.size}
-                      onChange={(e) => setParams({ ...params, size: parseInt(e.target.value) || 4 })}
+                      onChange={(e) =>
+                        setParams({
+                          ...params,
+                          size: parseInt(e.target.value) || 4,
+                        })
+                      }
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
                     />
                   </div>
@@ -177,11 +198,13 @@ export default function App() {
                     </label>
                     <button
                       type="button"
-                      onClick={() => setParams({ ...params, repeats: !params.repeats })}
+                      onClick={() =>
+                        setParams({ ...params, repeats: !params.repeats })
+                      }
                       className={`w-full px-4 py-3 rounded-2xl border transition-all flex items-center justify-center gap-2 ${
-                        params.repeats 
-                        ? 'bg-blue-50 border-blue-200 text-blue-700' 
-                        : 'bg-gray-50 border-gray-200 text-gray-500'
+                        params.repeats
+                          ? 'bg-blue-50 border-blue-200 text-blue-700'
+                          : 'bg-gray-50 border-gray-200 text-gray-500'
                       }`}
                     >
                       {params.repeats ? 'Enabled' : 'Disabled'}
@@ -198,7 +221,9 @@ export default function App() {
                   <input
                     type="text"
                     value={params.dictionary}
-                    onChange={(e) => setParams({ ...params, dictionary: e.target.value })}
+                    onChange={(e) =>
+                      setParams({ ...params, dictionary: e.target.value })
+                    }
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none text-sm"
                   />
                 </div>
@@ -236,7 +261,7 @@ export default function App() {
           </motion.div>
 
           {/* Results Section */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             className="lg:col-span-7"
@@ -245,9 +270,11 @@ export default function App() {
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-2">
                   <ChevronRight className="w-5 h-5 text-blue-600" />
-                  <h2 className="text-lg font-semibold">Results ({filteredResults.length})</h2>
+                  <h2 className="text-lg font-semibold">
+                    Results ({filteredResults.length})
+                  </h2>
                 </div>
-                
+
                 {results.length > 0 && (
                   <div className="flex items-center gap-2">
                     <div className="relative">
@@ -262,13 +289,21 @@ export default function App() {
                     </div>
                     <select
                       value={filterLength || ''}
-                      onChange={(e) => setFilterLength(e.target.value ? parseInt(e.target.value) : null)}
+                      onChange={(e) =>
+                        setFilterLength(
+                          e.target.value ? parseInt(e.target.value) : null,
+                        )
+                      }
                       className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none"
                     >
                       <option value="">All lengths</option>
-                      {Array.from(new Set(results.map(w => w.length))).sort((a: number, b: number) => b - a).map(len => (
-                        <option key={len} value={len}>{len} letters</option>
-                      ))}
+                      {Array.from(new Set(results.map((w) => w.length)))
+                        .sort((a: number, b: number) => b - a)
+                        .map((len) => (
+                          <option key={len} value={len}>
+                            {len} letters
+                          </option>
+                        ))}
                     </select>
                   </div>
                 )}
@@ -286,7 +321,7 @@ export default function App() {
 
                 {loading && (
                   <div className="space-y-4">
-                    {[1, 2, 3].map(i => (
+                    {[1, 2, 3].map((i) => (
                       <div key={i} className="animate-pulse space-y-2">
                         <div className="h-4 bg-gray-100 rounded w-20" />
                         <div className="grid grid-cols-3 gap-2">
@@ -307,10 +342,12 @@ export default function App() {
                           {length} Letters
                         </span>
                         <div className="h-px flex-grow bg-gray-100" />
-                        <span className="text-xs text-gray-400">{words.length} words</span>
+                        <span className="text-xs text-gray-400">
+                          {words.length} words
+                        </span>
                       </div>
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                        {words.map(word => (
+                        {words.map((word) => (
                           <motion.div
                             key={word}
                             initial={{ opacity: 0, scale: 0.95 }}

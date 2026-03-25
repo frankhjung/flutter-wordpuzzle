@@ -166,6 +166,58 @@ forwarding, which can be blocked by strict local firewall policies.
 
 ## Dependencies
 
+### Managing Outdated Packages
+
+To check for outdated dependencies and update them, you will need to run
+commands for both the web (Node.js) and Flutter environments.
+
+**For the Web App (Node.js):**
+
+To view outdated packages:
+
+```bash
+npm outdated
+```
+
+To safely update packages to the latest versions within the ranges specified in
+`package.json`:
+
+```bash
+npm update
+```
+
+_(Optional)_ To upgrade packages to their absolute latest versions (modifying
+`package.json`), you can use `npm-check-updates`:
+
+```bash
+npx npm-check-updates -u
+npm install
+```
+
+**For the Flutter App:**
+
+To view outdated packages:
+
+```bash
+cd flutter_app
+flutter pub outdated
+```
+
+To upgrade packages to their latest compatible versions:
+
+```bash
+cd flutter_app
+flutter pub upgrade
+```
+
+To upgrade packages to their absolute latest major versions (modifying
+`pubspec.yaml`):
+
+```bash
+cd flutter_app
+flutter pub upgrade --major-versions
+```
+
 ## CI Configuration
 
 GitHub Actions workflows read Flutter SDK version from the repository variable
