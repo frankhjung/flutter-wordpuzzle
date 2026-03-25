@@ -1,27 +1,7 @@
 ---
-version: "3.8"
-
 services:
-  # Clojure Backend
-  backend:
-    image: clojure:openjdk-17-lein-alpine
-    working_dir: /app
-    volumes:
-      - ./clojure-wordpuzzle:/app
-    command: lein run -m wordpuzzle.core --server
-    ports:
-      - "3000:3000"
+  app:
+    build: .
+    network_mode: host
     environment:
-      - PORT=3000
-
-  # Flutter Web App
-  frontend:
-    image: cirrusci/flutter:stable
-    working_dir: /app
-    volumes:
-      - ./flutter_app:/app
-    command: flutter run -d web-server --web-port 8080 --web-hostname 0.0.0.0
-    ports:
-      - "8080:8080"
-    depends_on:
-      - backend
+      PORT: "8080"

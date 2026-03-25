@@ -3,10 +3,11 @@
 This repository contains a local word-puzzle solver with:
 
 - A React + Vite web UI and Node/Express API in the workspace root.
-- A Flutter app in `flutter_app/` that calls the same API.
-- A local dictionary file at `resources/dictionary`.
+- A Flutter app in [flutter_app/](flutter_app/) that calls the same API.
+- A local dictionary file at [resources/dictionary](resources/dictionary).
 
-See project notes in `docs/requirements.md` and `docs/deliverables.md`.
+See project notes in [docs/requirements.md](docs/requirements.md) and
+[docs/deliverables.md](docs/deliverables.md).
 
 ## Quick Start
 
@@ -36,7 +37,7 @@ make run
 
 This starts the Express server (with Vite middleware) at:
 
-- `http://localhost:3000`
+- `http://localhost:8080`
 
 The UI and API are served from the same process. The solver endpoint is:
 
@@ -58,7 +59,7 @@ To use another supported device, override `FLUTTER_DEVICE`, for example:
 make run-flutter FLUTTER_DEVICE=linux
 ```
 
-By default, Flutter uses `http://localhost:3000` as the API base URL.
+By default, Flutter uses `http://localhost:8080` as the API base URL.
 
 #### Spelling Bee Example
 
@@ -134,11 +135,34 @@ make ci
 
 `docker-compose.yml` defines:
 
-- `frontend`: Flutter web app on port `8080`
-- `backend`: Clojure service on port `3000`
+- `app`: React + Vite UI and local Node/Express solver on port `8080`
 
-Note: the compose file mounts `./clojure-wordpuzzle`, which is not included in
-this workspace by default.
+To start the project using Docker Compose, run:
+
+```bash
+docker compose up --build
+```
+
+To run it in the background (detached mode), use:
+
+```bash
+docker compose up -d --build
+```
+
+To stop the services, run:
+
+```bash
+docker compose down
+```
+
+The container serves the web UI and `POST /api/solve` from the same process at:
+
+- `http://localhost:8080`
+
+Docker Compose no longer depends on the external `clojure/wordpuzzle` project.
+
+On Linux, the compose file uses host networking to avoid Docker bridge
+forwarding, which can be blocked by strict local firewall policies.
 
 ## Dependencies
 

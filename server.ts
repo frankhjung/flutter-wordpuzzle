@@ -5,7 +5,7 @@ import fs from "fs";
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT ?? 8080);
 
   app.use(express.json());
 
@@ -52,16 +52,16 @@ async function startServer() {
 
     const solvedWords = allWords.filter(word => {
       const wordLower = word.toLowerCase();
-      
+
       // 1. Minimum size
       if (wordLower.length < size) return false;
-      
+
       // 2. Must contain the mandatory letter (first letter of input)
       if (!wordLower.includes(mandatoryLetter)) return false;
-      
+
       // 3. Must only use provided letters
       const wordLetters = wordLower.split("");
-      
+
       if (repeats) {
         // Any letter in word must be in availableLetters
         return wordLetters.every(l => availableLetters.includes(l));

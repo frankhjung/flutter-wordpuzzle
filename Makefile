@@ -51,7 +51,7 @@ build-flutter: ## Build Flutter web app
 	@cd flutter_app && flutter build web
 
 run: ## Start the local web server
-	@echo "Starting web server at http://localhost:3000..."
+	@echo "Starting web server at http://localhost:8080..."
 	@npm run dev
 
 run-flutter: ## Launch the Flutter app locally (default device: chrome)

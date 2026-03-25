@@ -92,7 +92,7 @@ class FoundWordsNotifier extends Notifier<Set<String>> {
 }
 
 final apiServiceProvider = Provider<ApiService>(
-  (ref) => ApiService(baseUrl: 'http://localhost:3000'),
+  (ref) => ApiService(baseUrl: 'http://localhost:8080'),
 );
 
 final solverProvider = NotifierProvider<SolverNotifier, SolverState>(
