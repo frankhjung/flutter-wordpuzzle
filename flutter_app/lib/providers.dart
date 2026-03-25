@@ -44,10 +44,11 @@ class WordGroup {
   WordGroup({required this.length, required this.words});
 }
 
-class SolverNotifier extends StateNotifier<SolverState> {
-  final ApiService _apiService;
+class SolverNotifier extends Notifier<SolverState> {
+  ApiService get _apiService => ref.watch(apiServiceProvider);
 
-  SolverNotifier(this._apiService) : super(SolverState());
+  @override
+  SolverState build() => SolverState();
 
   Future<void> solve({
     required String letters,
@@ -70,12 +71,33 @@ class SolverNotifier extends StateNotifier<SolverState> {
   }
 }
 
-final apiServiceProvider = Provider(
+class FoundWordsNotifier extends Notifier<Set<String>> {
+  @override
+  Set<String> build() => <String>{};
+
+  void reset() {
+    state = <String>{};
+  }
+
+  void addWord(String word) {
+    final value = word.trim();
+    if (value.isEmpty || state.contains(value)) return;
+    state = <String>{...state, value};
+  }
+
+  void removeWord(String word) {
+    if (!state.contains(word)) return;
+    state = state.where((w) => w != word).toSet();
+  }
+}
+
+final apiServiceProvider = Provider<ApiService>(
   (ref) => ApiService(baseUrl: 'http://localhost:3000'),
 );
 
-final solverProvider = StateNotifierProvider<SolverNotifier, SolverState>((
-  ref,
-) {
-  return SolverNotifier(ref.watch(apiServiceProvider));
-});
+final solverProvider = NotifierProvider<SolverNotifier, SolverState>(
+  SolverNotifier.new,
+);
+
+final foundWordsProvider =
+    NotifierProvider<FoundWordsNotifier, Set<String>>(FoundWordsNotifier.new);

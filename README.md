@@ -1,24 +1,201 @@
 # Word Puzzle Solver
 
-This is a UI wrapping the
-[clojure word puzzle solver](https://github.com/frankhjung/clojure-wordpuzzle).
+This repository contains a local word-puzzle solver with:
 
-It was prepared using Google AI Studio using
-[these requirements](docs/requirements.md).
+- A React + Vite web UI and Node/Express API in the workspace root.
+- A Flutter app in `flutter_app/` that calls the same API.
+- A local dictionary file at `resources/dictionary`.
 
-See also [Key Deliverables](docs/deliverables.md).
+See project notes in `docs/requirements.md` and `docs/deliverables.md`.
 
-## Run and deploy your AI Studio app
+## Quick Start
 
-This contains everything you need to run your app locally.
+### Prerequisites
 
-View your app in AI Studio:
-<https://ai.studio/apps/07e6ab2a-bcf4-4d80-abe6-a37be46d3c8f>
+- Node.js 20+ and npm
+- Flutter SDK (stable channel)
+- GNU Make
+- (Optional) Docker and Docker Compose
 
-## Run Locally
+### Install dependencies
 
-**Prerequisites:** Node.js
+From the repository root:
 
-1. Install dependencies: `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app: `npm run dev`
+```bash
+npm install
+cd flutter_app && flutter pub get
+```
+
+### 1. Start the web app + API
+
+From the repository root:
+
+```bash
+make run
+```
+
+This starts the Express server (with Vite middleware) at:
+
+- `http://localhost:3000`
+
+The UI and API are served from the same process. The solver endpoint is:
+
+- `POST /api/solve`
+
+### 2. Run the Flutter app
+
+From the repository root:
+
+```bash
+make run-flutter
+```
+
+This defaults to running the Flutter app in Chrome.
+
+To use another supported device, override `FLUTTER_DEVICE`, for example:
+
+```bash
+make run-flutter FLUTTER_DEVICE=linux
+```
+
+By default, Flutter uses `http://localhost:3000` as the API base URL.
+
+#### Spelling Bee Example
+
+- **Letters:** `mitncao`
+- **Repeats:** `true`
+
+![Spelling Bee Example](docs/example-spelling-bee.png)
+
+## Build Locally
+
+### Web build
+
+From the repository root:
+
+```bash
+make build-web
+```
+
+Build output is written to `dist/`.
+
+### Flutter build (example: web)
+
+From the repository root:
+
+```bash
+make build-flutter
+```
+
+To build both web and Flutter artifacts in one command:
+
+```bash
+make build
+```
+
+## Test Locally
+
+### Type-check the web code
+
+From the repository root:
+
+```bash
+make lint-web
+```
+
+### Run Flutter widget tests
+
+From the repository root:
+
+```bash
+make test-flutter
+```
+
+To run all configured tests in one command:
+
+```bash
+make test
+```
+
+## Common Make Targets
+
+From the repository root:
+
+```bash
+make help
+make format
+make lint
+make build
+make test
+make ci
+```
+
+## Docker (optional)
+
+`docker-compose.yml` defines:
+
+- `frontend`: Flutter web app on port `8080`
+- `backend`: Clojure service on port `3000`
+
+Note: the compose file mounts `./clojure-wordpuzzle`, which is not included in
+this workspace by default.
+
+## Dependencies
+
+## CI Configuration
+
+GitHub Actions workflows read Flutter SDK version from the repository variable
+`FLUTTER_VERSION`.
+
+Set it in: Settings -> Secrets and variables -> Actions -> Variables.
+
+Update that single variable when upgrading Flutter for CI.
+
+### Root (web/API) dependencies
+
+- `@google/genai` `^1.29.0`
+- `@tailwindcss/vite` `^4.1.14`
+- `@vitejs/plugin-react` `^5.0.4`
+- `dotenv` `^17.2.3`
+- `express` `^4.21.2`
+- `lucide-react` `^0.546.0`
+- `motion` `^12.23.24`
+- `react` `^19.0.0`
+- `react-dom` `^19.0.0`
+- `vite` `^6.2.0`
+
+### Root dev dependencies
+
+- `@types/express` `^4.17.21`
+- `@types/node` `^22.14.0`
+- `autoprefixer` `^10.4.21`
+- `tailwindcss` `^4.1.14`
+- `tsx` `^4.21.0`
+- `typescript` `~5.8.2`
+- `vite` `^6.2.0`
+
+### Flutter dependencies (`flutter_app/pubspec.yaml`)
+
+- `cupertino_icons` `^1.0.2`
+- `flutter_riverpod` `^2.3.6`
+- `http` `^1.1.0`
+- `json_annotation` `^4.8.1`
+
+### Flutter dev dependencies
+
+- `flutter_lints` `^2.0.0`
+- `flutter_test` (SDK)
+
+## Flutter: Getting Started
+
+This project is a starting point for a Flutter application.
+
+A few resources to get you started if this is your first Flutter project:
+
+- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
+- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
