@@ -48,7 +48,9 @@ class _SolverPageState extends ConsumerState<SolverPage> {
 
   void _solve() {
     if (_formKey.currentState!.validate()) {
-      ref.read(solverProvider.notifier).solve(
+      ref
+          .read(solverProvider.notifier)
+          .solve(
             letters: _lettersController.text,
             size: int.parse(_sizeController.text),
             repeats: _repeats,

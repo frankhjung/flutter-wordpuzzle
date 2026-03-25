@@ -79,10 +79,8 @@ puzzle configurations.
 - **Validation:** Prevent layout/submission errors if the required 7+ lowercase
   letters are not provided. (The mandatory letters must be in the first position
   of `letters`.)
-- **Results Display:** Display the returned words in an organised manner (e.g.,
-  a scrollable list grouped by word length).
-- **Filtering:** Allow users to filter the generated results based on criteria,
-  such as word length or specific included letters.
+- **Results Display:** Display the returned words in an organised manner, such
+  as a scrollable list grouped by word length.
 
 ## Error Handling
 

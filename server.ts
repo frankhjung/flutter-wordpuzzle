@@ -82,11 +82,13 @@ async function startServer() {
 
         if (repeats) {
           // Any letter in word must be in availableLetters
-          return wordLetters.every((l) => availableLetters.includes(l));
+          return wordLetters.every((l: string) => availableLetters.includes(l));
         } else {
           // Each letter in word must be available in inputLetters (count-based)
           const counts: Record<string, number> = {};
-          availableLetters.forEach((l) => (counts[l] = (counts[l] || 0) + 1));
+          availableLetters.forEach(
+            (l: string) => (counts[l] = (counts[l] || 0) + 1),
+          );
           for (const l of wordLetters) {
             if (!counts[l]) return false;
             counts[l]--;

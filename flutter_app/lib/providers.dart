@@ -6,12 +6,15 @@ const _undefined = Object();
 
 class SolverState {
   final List<String> words;
+  final List<WordGroup> groupedWords;
   final bool isLoading;
   final String? error;
 
-  SolverState({this.words = const [], this.isLoading = false, this.error});
+  SolverState({this.words = const [], this.isLoading = false, this.error})
+    : groupedWords = _calculateGroupedWords(words);
 
-  List<WordGroup> get groupedWords {
+  static List<WordGroup> _calculateGroupedWords(List<String> words) {
+    if (words.isEmpty) return [];
     final Map<int, List<String>> groups = {};
     for (var word in words) {
       final len = word.length;

@@ -36,6 +36,7 @@ format-web: ## Format web files (if Prettier is available)
 		npx --no-install prettier --write "src/**/*.{ts,tsx,css}" "server.ts" "vite.config.ts" "index.html"; \
 	else \
 		echo "Skipping web formatting: Prettier is not configured."; \
+		echo "Run 'npm install --save-dev prettier' to install it."; \
 	fi
 
 format-flutter: ## Format Flutter files
