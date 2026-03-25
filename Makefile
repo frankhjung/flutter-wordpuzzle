@@ -74,9 +74,7 @@ run-flutter: ## Launch the Flutter app locally (default device: chrome)
 test: test-web test-flutter ## Run unit tests
 
 test-web: ## Run web unit tests when configured
-	@node -e 'const p=require("./package.json"); process.exit(p.scripts && p.scripts.test ? 0 : 1)' \
-		&& (echo "Running web tests..." && npm test) \
-		|| echo "Skipping web tests: no npm test script configured."
+	@npm test
 
 test-flutter: ## Run Flutter unit/widget tests
 	@echo "Running Flutter tests..."

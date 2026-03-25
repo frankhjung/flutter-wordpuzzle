@@ -11,7 +11,7 @@ class SolverState {
   final String? error;
 
   SolverState({this.words = const [], this.isLoading = false, this.error})
-    : groupedWords = _calculateGroupedWords(words);
+      : groupedWords = _calculateGroupedWords(words);
 
   static List<WordGroup> _calculateGroupedWords(List<String> words) {
     if (words.isEmpty) return [];
