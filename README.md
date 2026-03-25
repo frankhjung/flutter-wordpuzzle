@@ -14,15 +14,24 @@ See project notes in `docs/requirements.md` and `docs/deliverables.md`.
 
 - Node.js 20+ and npm
 - Flutter SDK (stable channel)
+- GNU Make
 - (Optional) Docker and Docker Compose
+
+### Install dependencies
+
+From the repository root:
+
+```bash
+npm install
+cd flutter_app && flutter pub get
+```
 
 ### 1. Start the web app + API
 
 From the repository root:
 
 ```bash
-npm install
-npm run dev
+make run
 ```
 
 This starts the Express server (with Vite middleware) at:
@@ -35,11 +44,10 @@ The UI and API are served from the same process. The solver endpoint is:
 
 ### 2. Run the Flutter app
 
-From `flutter_app/`:
+From the repository root:
 
 ```bash
-flutter pub get
-flutter run
+make run-flutter
 ```
 
 By default, Flutter uses `http://localhost:3000` as the API base URL.
@@ -51,17 +59,23 @@ By default, Flutter uses `http://localhost:3000` as the API base URL.
 From the repository root:
 
 ```bash
-npm run build
+make build-web
 ```
 
 Build output is written to `dist/`.
 
 ### Flutter build (example: web)
 
-From `flutter_app/`:
+From the repository root:
 
 ```bash
-flutter build web
+make build-flutter
+```
+
+To build both web and Flutter artifacts in one command:
+
+```bash
+make build
 ```
 
 ## Test Locally
@@ -71,15 +85,34 @@ flutter build web
 From the repository root:
 
 ```bash
-npm run lint
+make lint-web
 ```
 
 ### Run Flutter widget tests
 
-From `flutter_app/`:
+From the repository root:
 
 ```bash
-flutter test
+make test-flutter
+```
+
+To run all configured tests in one command:
+
+```bash
+make test
+```
+
+## Common Make Targets
+
+From the repository root:
+
+```bash
+make help
+make format
+make lint
+make build
+make test
+make ci
 ```
 
 ## Docker (optional)

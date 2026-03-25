@@ -2,21 +2,24 @@
 
 ## Personas
 
-You are an expert Flutter developer and DevOps engineer. Implement the following
-specification. Provide complete, runnable code blocks for all deliverables.
+You are an expert Flutter and React developer and DevOps engineer. Implement the
+following specification. Provide complete, runnable code blocks for all
+deliverables.
 
 ## Overview
 
-I want to create a web UI to solve word puzzles. I have an existing Clojure
-repository, <https://github.com/frankhjung/clojure-wordpuzzle> with two
-pipelines:
+The goal is to create a multi-frontend web application to solve word puzzles.
+The system consists of:
 
-- to build and test the core logic of the word puzzle solver,
-  <https://raw.githubusercontent.com/frankhjung/clojure-wordpuzzle/refs/heads/master/.github/workflows/ci.yml>
-- to run the wordpuzzle solver as a web server,
-  <https://raw.githubusercontent.com/frankhjung/clojure-wordpuzzle/refs/heads/master/.github/workflows/run-wordpuzzle.yml>
+- A Node.js/Express mock backend providing the puzzle-solving logic via a REST
+  API.
+- A React-based web UI served from the root.
+- a Flutter-based mobile/web UI in the `flutter_app/` directory.
 
-## Command line Interface (CLI) Contract
+The system can also integrate with an existing Clojure repository,
+<https://github.com/frankhjung/clojure-wordpuzzle>.
+
+## Command-line Interface (CLI) Contract
 
 ### Inputs
 
@@ -47,7 +50,7 @@ viscera
 
 ## API & Integration Contract
 
-The web UI interacts with the Clojure backend via a RESTful HTTP API.
+The web UIs interact with the backend via a RESTful HTTP API.
 
 - **Endpoint:** `POST /api/solve`
 - **Request Payload:** A JSON object matching the solver's expected parameters:
@@ -65,24 +68,25 @@ The web UI interacts with the Clojure backend via a RESTful HTTP API.
 
 ## UI/UX & Layout
 
-Create a web UI for the word puzzle solver that allows users to input their
+Create web UIs for the word puzzle solver that allows users to input their
 puzzle configurations.
 
-- **Layout:** A clean, central input form utilizing standard text fields and
-  toggles, styled with Material Design principles.
+- **Layout:** A clean, central input form utilising standard text fields and
+  toggles, styled with modern design principles (Material for Flutter, Tailwind/
+  Framer Motion for React).
 - **Inputs:** Form fields must map directly to the CLI backend inputs (`size`,
   `letters`, `repeats`, and optional `dictionary`).
 - **Validation:** Prevent layout/submission errors if the required 7+ lowercase
   letters are not provided. (The mandatory letters must be in the first position
   of `letters`.)
-- **Results Display:** Display the returned words in an organized manner (e.g.,
+- **Results Display:** Display the returned words in an organised manner (e.g.,
   a scrollable list grouped by word length).
 - **Filtering:** Allow users to filter the generated results based on criteria,
   such as word length or specific included letters.
 
 ## Error Handling
 
-The UI must handle and display specific, clear error messages to the user for
+The UIs must handle and display specific, clear error messages to the user for
 the following scenarios:
 
 - Network or connection failure to the backend.
@@ -92,15 +96,26 @@ the following scenarios:
 
 ## Technical Requirements
 
-- **Framework:** Ensure that the web UI is built using Flutter.
-- **State Management:** Use Riverpod for state management to handle form state
-  and API data fetching.
-- **Design:** The UI should be designed to be responsive and accessible,
-  ensuring that it works well on a variety of devices and screen sizes.
+### React Frontend (Root)
+
+- **Framework:** React 19 with Vite.
+- **Styling:** Tailwind CSS and Framer Motion for animations.
+- **Icons:** Lucide React.
+
+### Flutter Frontend (`flutter_app/`)
+
+- **Framework:** Flutter.
+- **State Management:** Riverpod for handling form state and API data fetching.
+- **Design:** Responsive and accessible Material Design.
+
+### Node.js Backend (`server.ts`)
+
+- **Framework:** Express with TypeScript.
+- **Development:** tsx for running the server.
 
 ## Deliverables
 
-1. Complete Flutter source code (e.g., `main.dart`, UI widgets, API service
-   classes).
-2. A `docker-compose.yml` file to orchestrate and run both the Flutter web app
-   and the Clojure backend together for easy local development.
+1. Complete React source code in `src/` and Node.js backend in `server.ts`.
+2. Complete Flutter source code in `flutter_app/`.
+3. A `docker-compose.yml` file to orchestrate the components for local
+   development.

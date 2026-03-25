@@ -1,6 +1,6 @@
 SHELL := /usr/bin/env bash
 
-.DEFAULT_GOAL := help
+.DEFAULT_GOAL := default
 
 .PHONY: help format lint build test ci \
 	run run-flutter \
@@ -11,6 +11,8 @@ SHELL := /usr/bin/env bash
 
 help: ## Show available targets
 	@awk 'match($$0, /^([a-zA-Z_-]+):.*##[[:space:]]*(.*)$$/, m) {printf "\033[1;36m%-16s\033[0m %s\n", m[1], m[2]}' $(MAKEFILE_LIST) | sort
+
+default: format lint build test  ## Default target: format, lint, build, and test all code
 
 format: format-web format-flutter ## Format all code
 

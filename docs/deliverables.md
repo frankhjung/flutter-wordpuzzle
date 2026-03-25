@@ -1,45 +1,53 @@
 # Key Deliverables
 
+## Node.js Mock Backend & React Web Application
+
+- **Location:** Project root directory.
+- **Backend:** Express server implemented in `server.ts` with TypeScript.
+- **Frontend:** React 19 application using Vite, TypeScript, and Tailwind CSS.
+- **Functionality:** Provides both the solver API and the main web UI for
+  immediate local development and testing.
+
 ## Flutter Web Application
 
-- Located in the `/flutter_app` directory.
-- **State Management:** Built using **Riverpod** for robust and scalable state
-  handling.
-- **UI/UX:** Implemented with Material Design principles, featuring a clean
-  input form and a responsive results display grouped by word length.
-- **API Integration:** Includes an ApiService class to communicate with the
-  Clojure backend via POST /api/solve.
+- **Location:** `/flutter_app` directory.
+- **Framework:** Built using Flutter with Riverpod for state management.
+- **Features:** Responsive UI following Material Design principles, integrated
+  with the `POST /api/solve` endpoint.
 
 ## Docker Orchestration
 
-- A docker-compose.yml file is provided in the root directory.
-- It orchestrates the **Clojure backend** (running the solver as a server) and
-  the **Flutter frontend** for seamless local development.
+- **File:** `docker-compose.yml` in the root directory.
+- **Services:** Configured to orchestrate the Clojure backend and Flutter
+  frontend.
+- **Note:** Requires a local clone of the `clojure-wordpuzzle` repository to run
+  correctly.
 
-## Live Preview (React/Express)
+## How to use the Web Stack (React/Express)
 
-- Since this environment is optimized for TypeScript/React, I have also built a
-  fully functional **React version** of the UI for the live preview.
-- **Mock Backend:** An Express server (`server.ts`) mocks the Clojure solver's
-  API logic, allowing you to test the interface immediately.
-- **Features:** Includes input validation (7+ letters), real-time filtering by
-  length or text, and grouped results display.
+To run the default React web application and Node.js backend:
+
+1. Ensure you have Node.js 20+ installed.
+2. From the project root, run `npm install`.
+3. Start the server and UI with `npm run dev`.
+4. Access the application at `http://localhost:3000`.
 
 ## How to use the Flutter app
 
 To run the Flutter application locally:
 
-1. Ensure you have Flutter installed.
-1. Navigate to the `flutter_app` directory.
-1. Run `flutter pub get` to install dependencies.
-1. Run `flutter run -d chrome` to start the web application.
+1. Ensure you have the Flutter SDK installed.
+2. Navigate to the `flutter_app` directory.
+3. Run `flutter pub get`.
+4. Run `flutter run -d chrome` to start the web application.
+5. The app will communicate with the API at `http://localhost:3000`.
 
 ## Docker Setup
 
-To run the entire stack (Clojure + Flutter):
+To run the Clojure-based stack:
 
-- Clone your Clojure repository into a folder named `clojure-wordpuzzle` in the
-  root directory.
-- Run `docker-compose up`.
-- The backend will be available on port `3000` and the Flutter frontend on port
-  `8080`.
+1. Clone the Clojure repository:
+   `git clone https://github.com/frankhjung/clojure-wordpuzzle`
+2. Run `docker-compose up`.
+3. The Clojure backend will be available on port `3000` and the Flutter frontend
+   on port `8080`.
