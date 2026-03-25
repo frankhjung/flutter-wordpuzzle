@@ -1,5 +1,7 @@
 SHELL := /usr/bin/env bash
 
+FLUTTER_DEVICE ?= chrome
+
 .DEFAULT_GOAL := default
 
 .PHONY: help format lint build test ci \
@@ -52,9 +54,9 @@ run: ## Start the local web server
 	@echo "Starting web server at http://localhost:3000..."
 	@npm run dev
 
-run-flutter: ## Launch the Flutter app locally
-	@echo "Launching Flutter app..."
-	@cd flutter_app && flutter run
+run-flutter: ## Launch the Flutter app locally (default device: chrome)
+	@echo "Launching Flutter app on $(FLUTTER_DEVICE)..."
+	@cd flutter_app && flutter run -d $(FLUTTER_DEVICE)
 
 test: test-web test-flutter ## Run unit tests
 

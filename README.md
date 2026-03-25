@@ -50,7 +50,22 @@ From the repository root:
 make run-flutter
 ```
 
+This defaults to running the Flutter app in Chrome.
+
+To use another supported device, override `FLUTTER_DEVICE`, for example:
+
+```bash
+make run-flutter FLUTTER_DEVICE=linux
+```
+
 By default, Flutter uses `http://localhost:3000` as the API base URL.
+
+#### Spelling Bee Example
+
+- **Letters:** `mitncao`
+- **Repeats:** `true`
+
+![Spelling Bee Example](docs/example-spelling-bee.png)
 
 ## Build Locally
 
@@ -127,6 +142,15 @@ this workspace by default.
 
 ## Dependencies
 
+## CI Configuration
+
+GitHub Actions workflows read Flutter SDK version from the repository variable
+`FLUTTER_VERSION`.
+
+Set it in: Settings -> Secrets and variables -> Actions -> Variables.
+
+Update that single variable when upgrading Flutter for CI.
+
 ### Root (web/API) dependencies
 
 - `@google/genai` `^1.29.0`
@@ -161,3 +185,17 @@ this workspace by default.
 
 - `flutter_lints` `^2.0.0`
 - `flutter_test` (SDK)
+
+## Flutter: Getting Started
+
+This project is a starting point for a Flutter application.
+
+A few resources to get you started if this is your first Flutter project:
+
+- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
+- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
