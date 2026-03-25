@@ -187,10 +187,11 @@ npm update
 ```
 
 _(Optional)_ To upgrade packages to their absolute latest versions (modifying
-`package.json`), you can use `npm-check-updates`:
+`package.json`), you can use `npm-check-updates`. (Installing it locally first avoids caching bugs with older global `npx` versions):
 
 ```bash
-npx npm-check-updates -u
+npm install -D npm-check-updates
+npx ncu -u
 npm install
 ```
 
@@ -227,40 +228,12 @@ Set it in: Settings -> Secrets and variables -> Actions -> Variables.
 
 Update that single variable when upgrading Flutter for CI.
 
-### Root (web/API) dependencies
+### Project Dependencies
 
-- `@google/genai` `^1.29.0`
-- `@tailwindcss/vite` `^4.1.14`
-- `@vitejs/plugin-react` `^5.0.4`
-- `dotenv` `^17.2.3`
-- `express` `^4.21.2`
-- `lucide-react` `^0.546.0`
-- `motion` `^12.23.24`
-- `react` `^19.0.0`
-- `react-dom` `^19.0.0`
-- `vite` `^6.2.0`
+The current dependencies and their versions are managed in the following configuration files:
 
-### Root dev dependencies
-
-- `@types/express` `^4.17.21`
-- `@types/node` `^22.14.0`
-- `autoprefixer` `^10.4.21`
-- `tailwindcss` `^4.1.14`
-- `tsx` `^4.21.0`
-- `typescript` `~5.8.2`
-- `vite` `^6.2.0`
-
-### Flutter dependencies (`flutter_app/pubspec.yaml`)
-
-- `cupertino_icons` `^1.0.2`
-- `flutter_riverpod` `^2.3.6`
-- `http` `^1.1.0`
-- `json_annotation` `^4.8.1`
-
-### Flutter dev dependencies
-
-- `flutter_lints` `^2.0.0`
-- `flutter_test` (SDK)
+- **Root (web/API):** See [`package.json`](package.json).
+- **Flutter App:** See [`flutter_app/pubspec.yaml`](flutter_app/pubspec.yaml).
 
 ## Flutter: Getting Started
 
