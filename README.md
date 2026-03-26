@@ -16,7 +16,7 @@ specified lengths.
   word
 - **Dictionary**: A standard English dictionary is used to validate the words.
 
-![Spelling Bee sample puzzle](docs/spelling-bee-sample.png)
+![Spelling Bee sample puzzle](docs/example-spelling-bee.png)
 
 ## Requirements and Change Notes
 
