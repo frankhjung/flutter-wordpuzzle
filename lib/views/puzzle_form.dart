@@ -11,6 +11,7 @@ class PuzzleForm extends ConsumerStatefulWidget {
 
 class _PuzzleFormState extends ConsumerState<PuzzleForm> {
   final _formKey = GlobalKey<FormState>();
+  final _mandatoryController = TextEditingController();
   final _lettersController = TextEditingController();
   final _sizeController = TextEditingController(text: '4');
   final _dictionaryController = TextEditingController(
@@ -19,6 +20,7 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
 
   @override
   void dispose() {
+    _mandatoryController.dispose();
     _lettersController.dispose();
     _sizeController.dispose();
     _dictionaryController.dispose();
@@ -30,7 +32,7 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
       final notifier = ref.read(solverProvider.notifier);
       final currentRepeats = ref.read(solverProvider).input.repeats;
       notifier.updateInput(
-        letters: _lettersController.text.toLowerCase(),
+        letters: _mandatoryController.text.toLowerCase() + _lettersController.text.toLowerCase(),
         size: int.parse(_sizeController.text),
         repeats: currentRepeats,
         dictionaryPath: _dictionaryController.text,
@@ -51,10 +53,29 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
           Text('Puzzle Input', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 16),
           TextFormField(
+            controller: _mandatoryController,
+            decoration: const InputDecoration(
+              labelText: 'Mandatory letter',
+              border: OutlineInputBorder(),
+            ),
+            maxLength: 1,
+            textInputAction: TextInputAction.next,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter a letter';
+              }
+              if (!RegExp(r'^[a-z]$').hasMatch(value)) {
+                return 'Only lowercase alphabet characters allowed';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+          TextFormField(
             controller: _lettersController,
             decoration: const InputDecoration(
-              labelText: 'Letters (e.g. abcdefg)',
-              helperText: '7+ letters. The first letter is mandatory.',
+              labelText: 'Other Letters (e.g. bcdefg)',
+              helperText: '6+ letters.',
               border: OutlineInputBorder(),
             ),
             textInputAction: TextInputAction.next,
@@ -62,8 +83,8 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
               if (value == null || value.isEmpty) {
                 return 'Please enter letters';
               }
-              if (value.length < 7) {
-                return 'Must provide at least 7 letters';
+              if (value.length < 6) {
+                return 'Must provide at least 6 letters';
               }
               if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
                 return 'Only alphabet characters allowed';
