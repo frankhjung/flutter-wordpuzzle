@@ -93,8 +93,9 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
           const SizedBox(height: 16),
           TextFormField(
             controller: _dictionaryController,
+            readOnly: true,
             decoration: const InputDecoration(
-              labelText: 'Dictionary Path (Optional)',
+              labelText: 'Dictionary Path',
               border: OutlineInputBorder(),
             ),
             textInputAction: TextInputAction.done,
