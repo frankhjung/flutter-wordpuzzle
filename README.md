@@ -3,8 +3,13 @@
 This repository contains a local word-puzzle solver deployed as a Pure Flutter
 Web app.
 
-See project notes in [docs/app-requirements.md](docs/app-requirements.md) and
-[docs/app-deliverables.md](docs/app-deliverables.md).
+See project notes in [docs/](docs/)
+
+- [Initial Application Requirements](docs/app-requirements.md)
+- [Application Deliverables](docs/app-deliverables.md)
+- [Refactoring Requirements](docs/refactoring-requirements.md)
+- [Refactoring Implementation](docs/refactoring-implementation.md)
+- [Changes](docs/changes.md)
 
 ## Quick Start
 
