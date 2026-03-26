@@ -2,6 +2,5 @@
 services:
   app:
     build: .
-    network_mode: host
-    environment:
-      PORT: "8080"
+    ports:
+      - "8080:80"

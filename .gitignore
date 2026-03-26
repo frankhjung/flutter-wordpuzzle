@@ -1,10 +1,49 @@
+# Environment
 !.env.example
-.DS_Store
 .env*
-*.log
+
+# OS and Editors
+.DS_Store
+*.swp
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.atom/
+.history
+
+# Build and Dependencies
 build/
-coverage/
 dist/
-.dart_tool/
 node_modules/
-web/
+.dart_tool/
+.pub-cache/
+.pub/
+.flutter-plugins-dependencies
+**/doc/api/
+.build/
+.swiftpm/
+
+# Logs and Temporary
+*.log
+*.class
+*.pyc
+.buildlog/
+.svn/
+migrate_working_dir/
+
+# Flutter/Mobile specific
+/android/app/debug
+/android/app/profile
+/android/app/release
+**/ios/Flutter/.last_build_id
+app.*.symbols
+app.*.map.json
+
+# Test and coverage
+coverage/
+
+# Web (If this was intended to ignore a deployment folder, keep it; 
+# otherwise, ensure source files in 'web/' are tracked.)
+# web/

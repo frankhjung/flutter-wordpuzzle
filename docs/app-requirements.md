@@ -4,17 +4,20 @@
 
 You are an expert Flutter and React developer and DevOps engineer. Implement the
 following specification. Provide complete, runnable code blocks for all
-deliverables.
 
-## Overview
-
-The goal is to create a multi-frontend web application to solve word puzzles.
-The system consists of:
+- `-d`, `--dictionary STRING` assets/dictionary.txt Alternate word
+  dictionary The goal is to create a multi-frontend web application to solve
+  word puzzles. The system consists of:
 
 - A Node.js/Express mock backend providing the puzzle-solving logic via a REST
   API.
 - A React-based web UI served from the root.
-- a Flutter-based mobile/web UI in the `flutter_app/` directory.
+
+```bash
+java -jar target/uberjar/wordpuzzle-*-standalone.jar --size=7 --letters=cadevrsoi --dictionary=assets/dictionary.txt
+```
+
+- a Flutter-based mobile/web UI.
 
 The system can also integrate with an existing Clojure repository,
 <https://github.com/frankhjung/clojure-wordpuzzle>.
@@ -26,6 +29,17 @@ The system can also integrate with an existing Clojure repository,
 The inputs to the word puzzle solver are:
 
 - `-d`, `--dictionary STRING` resources/dictionary Alternate word dictionary
+
+  ```bash
+  java -jar target/uberjar/wordpuzzle-*-standalone.jar --size=7 --letters=cadevrsoi --dictionary=assets/dictionary.txt
+  discover
+  divorce
+  divorces
+  sidecar
+  varicose
+  viscera
+  ```
+
 - `-s`, `--size INT 4` Minimum word size
 - `-l`, `--letters STRING` [REQUIRED] 7+ lowercase letters to make words
 - `-r`, `--repeats` Letters can be repeated (e.g., Spelling Bee)
@@ -100,7 +114,7 @@ the following scenarios:
 - **Styling:** Tailwind CSS and Framer Motion for animations.
 - **Icons:** Lucide React.
 
-### Flutter Frontend (`flutter_app/`)
+### Flutter Frontend
 
 - **Framework:** Flutter.
 - **State Management:** Riverpod for handling form state and API data fetching.
@@ -114,6 +128,7 @@ the following scenarios:
 ## Deliverables
 
 1. Complete React source code in `src/` and Node.js backend in `server.ts`.
-2. Complete Flutter source code in `flutter_app/`.
+2. Complete Flutter source code.
 3. A `docker-compose.yml` file to orchestrate the components for local
    development.
+

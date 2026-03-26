@@ -10,7 +10,7 @@
 
 ## Flutter Web Application
 
-- **Location:** `/flutter_app` directory.
+- **Location:** Project root directory.
 - **Framework:** Built using Flutter with Riverpod for state management.
 - **Features:** Responsive UI following Material Design principles, integrated
   with the `POST /api/solve` endpoint.
@@ -36,7 +36,7 @@ To run the default React web application and Node.js backend:
 To run the Flutter application locally:
 
 1. Ensure you have the Flutter SDK installed.
-2. Navigate to the `flutter_app` directory.
+2. Navigate to the project root directory.
 3. Run `flutter pub get`.
 4. Run `flutter run -d chrome` to start the web application.
 5. The app will communicate with the API at `http://localhost:8080`.
