@@ -66,3 +66,11 @@
    "mitncao") and another where they are enabled (finding both).
 10. Add caching for `.dart_tool/build`.
 11. Check pipeline actions are up to date.
+12. Add mandatory field for the puzzle input.
+13. Hide dictionary field.
+14. Enable "Allow repeating letters?" as the default (i.e. set to true).
+
+## To Do
+
+1. Wasm dry run succeeded. Consider building and testing your application with
+   the `--wasm` flag. See docs for more info: <https://docs.flutter.dev/platform-integration/web/wasm> . Use --no-wasm-dry-run to disable these warnings.

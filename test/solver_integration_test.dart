@@ -26,8 +26,14 @@ void main() {
           ),
         );
 
-        final lettersField = find.byType(TextFormField).first;
-        await tester.enterText(lettersField, 'mitncao');
+        final mandatoryField = find.byType(TextFormField).at(0);
+        final otherLettersField = find.byType(TextFormField).at(1);
+        await tester.enterText(mandatoryField, 'm');
+        await tester.enterText(otherLettersField, 'itncao');
+        await tester.pumpAndSettle();
+
+        // Default is now repeats=true, so click to disable it here
+        await tester.tap(find.text('Allow repeating letters?'));
         await tester.pumpAndSettle();
 
         await tester.tap(find.text('Solve Puzzle'));
@@ -64,11 +70,10 @@ void main() {
           ),
         );
 
-        final lettersField = find.byType(TextFormField).first;
-        await tester.enterText(lettersField, 'mitncao');
-        await tester.pumpAndSettle();
-
-        await tester.tap(find.text('Allow repeating letters?'));
+        final mandatoryField = find.byType(TextFormField).at(0);
+        final otherLettersField = find.byType(TextFormField).at(1);
+        await tester.enterText(mandatoryField, 'm');
+        await tester.enterText(otherLettersField, 'itncao');
         await tester.pumpAndSettle();
 
         await tester.tap(find.text('Solve Puzzle'));
@@ -96,8 +101,10 @@ void main() {
         (WidgetTester tester) async {
       await tester.runAsync(() async {
         await tester.pumpWidget(const ProviderScope(child: MyApp()));
-        final lettersField = find.byType(TextFormField).first;
-        await tester.enterText(lettersField, 'abc1234');
+        final mandatoryField = find.byType(TextFormField).at(0);
+        final otherLettersField = find.byType(TextFormField).at(1);
+        await tester.enterText(mandatoryField, 'm');
+        await tester.enterText(otherLettersField, 'abc1234');
         await tester.tap(find.text('Solve Puzzle'));
         await tester.pumpAndSettle();
         expect(find.text('Only alphabet characters allowed'), findsOneWidget);

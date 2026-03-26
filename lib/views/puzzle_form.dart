@@ -14,16 +14,12 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
   final _mandatoryController = TextEditingController();
   final _lettersController = TextEditingController();
   final _sizeController = TextEditingController(text: '4');
-  final _dictionaryController = TextEditingController(
-    text: 'assets/dictionary.txt',
-  );
 
   @override
   void dispose() {
     _mandatoryController.dispose();
     _lettersController.dispose();
     _sizeController.dispose();
-    _dictionaryController.dispose();
     super.dispose();
   }
 
@@ -32,10 +28,10 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
       final notifier = ref.read(solverProvider.notifier);
       final currentRepeats = ref.read(solverProvider).input.repeats;
       notifier.updateInput(
-        letters: _mandatoryController.text.toLowerCase() + _lettersController.text.toLowerCase(),
+        letters: _mandatoryController.text.toLowerCase() +
+            _lettersController.text.toLowerCase(),
         size: int.parse(_sizeController.text),
         repeats: currentRepeats,
-        dictionaryPath: _dictionaryController.text,
       );
       notifier.solve();
       // On mobile layouts, scroll down or close keyboard
@@ -100,7 +96,8 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
               border: OutlineInputBorder(),
             ),
             keyboardType: TextInputType.number,
-            textInputAction: TextInputAction.next,
+            textInputAction: TextInputAction.done,
+            onFieldSubmitted: (_) => _submit(),
             validator: (value) {
               if (value == null || int.tryParse(value) == null) {
                 return 'Please enter a valid number';
@@ -110,17 +107,6 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
               }
               return null;
             },
-          ),
-          const SizedBox(height: 16),
-          TextFormField(
-            controller: _dictionaryController,
-            readOnly: true,
-            decoration: const InputDecoration(
-              labelText: 'Dictionary Path',
-              border: OutlineInputBorder(),
-            ),
-            textInputAction: TextInputAction.done,
-            onFieldSubmitted: (_) => _submit(),
           ),
           const SizedBox(height: 16),
           SwitchListTile(

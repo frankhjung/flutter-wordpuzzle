@@ -7,7 +7,7 @@ class PuzzleInput {
   PuzzleInput({
     required this.letters,
     this.size = 4,
-    this.repeats = false,
+    this.repeats = true,
     this.dictionaryPath = 'assets/dictionary.txt',
   });
 }
