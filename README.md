@@ -3,6 +3,23 @@
 This repository contains a local word-puzzle solver deployed as a Pure Flutter
 Web app.
 
+## Sample Puzzle
+
+The puzzle consists of a set of letters and a list of word lengths. The goal is
+to find all valid words that can be formed using the given letters and match the
+specified lengths.
+
+- **Letters**: `mitncao` - here `m` is mandatory and must be included in every
+  word)
+- **Word Lengths**: `4, 5, 6, 7,...` - 4 more letters in each word
+- **Allow Repeating Letters**: Yes - each letter can be used multiple times in a
+  word
+- **Dictionary**: A standard English dictionary is used to validate the words.
+
+![Spelling Bee sample puzzle](docs/spelling-bee-sample.png)
+
+## Requirements and Change Notes
+
 See project notes in [docs/](docs/)
 
 - [Initial Application Requirements](docs/app-requirements.md)
@@ -51,7 +68,7 @@ docker compose up --build
 docker-compose up --build
 ```
 
-The web UI will be served at `http://localhost:8080`.
+The web UI will be served at `http://localhost:8080`.mitncao
 
 #### Docker build tips
 

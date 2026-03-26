@@ -30,7 +30,7 @@ lint: ## Analyze Flutter code
 
 build: ## Build Flutter web app
 	@echo "Building Flutter web app..."
-	@flutter build web
+	@flutter build web --base-href /flutter-wordpuzzle/
 
 run: ## Launch the Flutter app locally (default device: chrome)
 	@echo "Launching Flutter app on $(FLUTTER_DEVICE)..."
