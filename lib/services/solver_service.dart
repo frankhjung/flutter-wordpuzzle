@@ -2,10 +2,20 @@ import 'package:flutter/services.dart' show rootBundle;
 import '../models/puzzle_model.dart';
 
 class SolverService {
-  String? _dictionaryContent;
+  List<String>? _dictionaryWords;
+  String? _dictionaryPath;
 
   Future<void> _loadDictionary(String path) async {
-    _dictionaryContent ??= await rootBundle.loadString(path);
+    if (_dictionaryWords != null && _dictionaryPath == path) {
+      return;
+    }
+    final content = await rootBundle.loadString(path);
+    _dictionaryPath = path;
+    _dictionaryWords = content
+        .split(RegExp(r'\r?\n'))
+        .map((w) => w.trim())
+        .where((w) => w.isNotEmpty)
+        .toList();
   }
 
   Future<PuzzleResult> solve(PuzzleInput input) async {
@@ -25,21 +35,24 @@ class SolverService {
       return PuzzleResult(error: 'Failed to read dictionary file.');
     }
 
-    if (_dictionaryContent == null || _dictionaryContent!.isEmpty) {
+    if (_dictionaryWords == null || _dictionaryWords!.isEmpty) {
       return PuzzleResult(error: 'Dictionary is empty or failed to load.');
     }
-
-    final allWords = _dictionaryContent!
-        .split(RegExp(r'\r?\n'))
-        .map((w) => w.trim())
-        .where((w) => w.isNotEmpty)
-        .toList();
 
     final inputLetters = input.letters.toLowerCase();
     final mandatoryLetter = inputLetters[0];
     final availableLetters = inputLetters.split('');
 
-    final solvedWords = allWords.where((word) {
+    // Pre-calculate the letter counts if repeats are not allowed.
+    // This is more efficient than doing it for every word in the dictionary.
+    final Map<String, int> availableLetterCounts = {};
+    if (!input.repeats) {
+      for (var l in availableLetters) {
+        availableLetterCounts[l] = (availableLetterCounts[l] ?? 0) + 1;
+      }
+    }
+
+    final solvedWords = _dictionaryWords!.where((word) {
       final wordLower = word.toLowerCase();
 
       // 1. Minimum size
@@ -54,17 +67,8 @@ class SolverService {
       if (input.repeats) {
         return wordLetters.every((l) => availableLetters.contains(l));
       } else {
-        // Create a copy of the available letters count
-        final Map<String, int> counts = {};
-        for (var l in availableLetters) {
-          counts[l] = (counts[l] ?? 0) + 1;
-        }
-
-        // For standard word puzzles, you can often use letters as many times
-        // as you want IF you have at least one.
-        // BUT the requirements said "Must only use provided letters".
-        // Let's assume the user meant "Allow repeating letters" toggle should work.
-        // If maniac is desired, we must ensure repeats=true works.
+        // Create a copy of the pre-calculated counts for this word check.
+        final counts = Map<String, int>.from(availableLetterCounts);
 
         for (var l in wordLetters) {
           if (!counts.containsKey(l) || counts[l]! <= 0) return false;

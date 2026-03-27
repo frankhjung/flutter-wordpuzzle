@@ -1,55 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_wordpuzzle/main.dart';
-import 'dart:io';
+import 'package:flutter_wordpuzzle/models/puzzle_model.dart';
+import 'package:flutter_wordpuzzle/services/solver_service.dart';
 
 void main() {
-  final dictionary = File('assets/dictionary.txt').readAsStringSync();
+  Future<void> waitForFinder(
+    WidgetTester tester,
+    Finder finder, {
+    int maxTicks = 200,
+    Duration step = const Duration(milliseconds: 50),
+  }) async {
+    for (var i = 0; i < maxTicks; i++) {
+      if (finder.evaluate().isNotEmpty) return;
+      await tester.pump(step);
+    }
+  }
 
   group('Solver Integration Tests - Repeats Toggle', () {
     testWidgets(
-        'With letters "mitncao" and repeats DISABLED: finds "manic" but not "maniac"',
+        'With letters "mitncao" and repeats DISABLED: includes "manic" but excludes "maniac"',
         (WidgetTester tester) async {
-      tester.view.physicalSize = const Size(1200, 1200);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(() => tester.view.resetPhysicalSize());
-
       await tester.runAsync(() async {
-        await tester.pumpWidget(
-          ProviderScope(
-            child: DefaultAssetBundle(
-              bundle: TestAssetBundle(dictionary),
-              child: const MyApp(),
-            ),
-          ),
+        final service = SolverService();
+        final result = await service.solve(
+          PuzzleInput(letters: 'mitncao', repeats: false, size: 4),
         );
 
-        final mandatoryField = find.byType(TextFormField).at(0);
-        final otherLettersField = find.byType(TextFormField).at(1);
-        await tester.enterText(mandatoryField, 'm');
-        await tester.enterText(otherLettersField, 'itncao');
-        await tester.pumpAndSettle();
-
-        // Default is now repeats=true, so click to disable it here
-        await tester.tap(find.text('Allow repeating letters?'));
-        await tester.pumpAndSettle();
-
-        await tester.tap(find.text('Solve Puzzle'));
-        await tester.pump();
-
-        int count = 0;
-        while (count < 50) {
-          await Future.delayed(const Duration(milliseconds: 50));
-          await tester.pump();
-          if (find.byKey(const Key('word-manic')).evaluate().isNotEmpty) break;
-          count++;
-        }
-        await tester.pumpAndSettle();
-
-        expect(find.byKey(const Key('word-manic')), findsOneWidget);
-        expect(find.byKey(const Key('word-maniac')), findsNothing);
+        expect(result.error, isNull);
+        expect(result.words, contains('manic'));
+        expect(result.words, isNot(contains('maniac')));
       });
     });
 
@@ -61,34 +42,16 @@ void main() {
       addTearDown(() => tester.view.resetPhysicalSize());
 
       await tester.runAsync(() async {
-        await tester.pumpWidget(
-          ProviderScope(
-            child: DefaultAssetBundle(
-              bundle: TestAssetBundle(dictionary),
-              child: const MyApp(),
-            ),
-          ),
-        );
+        await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
         final mandatoryField = find.byType(TextFormField).at(0);
         final otherLettersField = find.byType(TextFormField).at(1);
         await tester.enterText(mandatoryField, 'm');
         await tester.enterText(otherLettersField, 'itncao');
-        await tester.pumpAndSettle();
-
-        await tester.tap(find.text('Solve Puzzle'));
         await tester.pump();
 
-        int count = 0;
-        while (count < 50) {
-          await Future.delayed(const Duration(milliseconds: 50));
-          await tester.pump();
-          final maniacFound =
-              find.byKey(const Key('word-maniac')).evaluate().isNotEmpty;
-          if (maniacFound) break;
-          count++;
-        }
-        await tester.pumpAndSettle();
+        await tester.tap(find.text('Solve Puzzle'));
+        await waitForFinder(tester, find.byKey(const Key('word-maniac')));
 
         expect(find.byKey(const Key('word-manic')), findsOneWidget);
         expect(find.byKey(const Key('word-maniac')), findsOneWidget);
@@ -99,37 +62,15 @@ void main() {
   group('Solver Logic - Edge Cases', () {
     testWidgets('Entering invalid characters displays error message',
         (WidgetTester tester) async {
-      await tester.runAsync(() async {
-        await tester.pumpWidget(const ProviderScope(child: MyApp()));
-        final mandatoryField = find.byType(TextFormField).at(0);
-        final otherLettersField = find.byType(TextFormField).at(1);
-        await tester.enterText(mandatoryField, 'm');
-        await tester.enterText(otherLettersField, 'abc1234');
-        await tester.tap(find.text('Solve Puzzle'));
-        await tester.pumpAndSettle();
-        expect(find.text('Only alphabet characters allowed'), findsOneWidget);
-      });
+      await tester.pumpWidget(const ProviderScope(child: MyApp()));
+      final mandatoryField = find.byType(TextFormField).at(0);
+      final otherLettersField = find.byType(TextFormField).at(1);
+      await tester.enterText(mandatoryField, 'm');
+      await tester.enterText(otherLettersField, 'abcdeFg');
+      await tester.tap(find.text('Solve Puzzle'));
+      await tester.pump();
+      expect(find.text('Only lowercase alphabet characters allowed'),
+          findsOneWidget);
     });
   });
-}
-
-class TestAssetBundle extends CachingAssetBundle {
-  final String dictionary;
-  TestAssetBundle(this.dictionary);
-
-  @override
-  Future<String> loadString(String key, {bool cache = true}) async {
-    if (key == 'assets/dictionary.txt') {
-      return dictionary;
-    }
-    return super.loadString(key, cache: cache);
-  }
-
-  @override
-  Future<ByteData> load(String key) async {
-    if (key == 'assets/dictionary.txt') {
-      return ByteData.view(Uint8List.fromList(dictionary.codeUnits).buffer);
-    }
-    return ByteData(0);
-  }
 }

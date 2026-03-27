@@ -1,91 +1,85 @@
 # Refactoring to Pure Flutter Web App
 
-This plan describes migrating the Word Puzzle solver from a React/Vite/TypeScript frontend and Node.js backend into a pure Flutter Web application, as per the specifications in [docs/refactor.md](file:///home/frank/dev/flutter/wordpuzzle/docs/refactor.md).
+This document summarizes the implemented migration from a React/Vite/TypeScript
+frontend and Node.js backend into a pure Flutter Web app, as specified in
+[refactor-requirements.md](refactor-requirements.md).
 
-## Proposed Changes
+## Implemented Changes
 
-### 1. Initialise and Structure Flutter App
+### 1. Flutter App Structure
 
-- Clean up or initialise Flutter app structure properly if it doesn't already exist.
-- Ensure the project builds targeting web successfully.
+- Flutter app structure was consolidated in the root project.
+- Web build and run flow is provided through `Makefile`, Flutter CLI, and
+  Docker.
 
----
+### 2. Solver and State Management
 
-### 2. Implement the Solver Logic within an MVC Architecture
+- Solver logic is implemented in `lib/services/solver_service.dart`.
+- Data models are in `lib/models/puzzle_model.dart`.
+- UI state is managed via Riverpod notifier/provider definitions in
+  `lib/providers.dart`.
+- Dictionary loading is handled client-side from `assets/dictionary.txt`.
 
-- Adopt a Model / View / Controller (MVC) pattern to separate presentation from the word solver service.
-- Port the game solving logic to a Dart "Service" or "Controller".
-- Models will define the data structures (e.g. puzzle input parameters, dictionary, result lists).
-- Ensure performance and memory usage are optimal since it will run fully client-side.
+#### `lib/models/puzzle_model.dart`
 
-#### [NEW] lib/models/puzzle_model.dart
+#### `lib/providers.dart`
 
-#### [NEW] lib/controllers/solver_controller.dart
-
-#### [NEW] lib/services/solver_service.dart
-
----
+#### `lib/services/solver_service.dart`
 
 ### 3. Build the Frontend Interface
 
-- Rewrite [src/App.tsx](file:///home/frank/dev/flutter/wordpuzzle/src/App.tsx) and related components as Flutter widgets (Views).
-- Implement the requested Material design layout: form to collect inputs, validating 7+ minimum characters, alphabet only.
-- Show scrollable results list with grouping and highlighting.
-- Build error handling states and network (or solver logic) error surfaces.
-- Use **Provider** for state management to connect Views with Models and Controllers.
+- The UI is implemented with Flutter widgets and Material components.
+- Input validation enforces required mandatory letter and alphabet-only letter
+  fields.
+- Results are grouped and rendered in `PuzzleResults`.
+- Error and empty states are surfaced directly in the results pane.
+- Riverpod is used for state updates and solve actions.
 
-#### [MODIFY] lib/main.dart
+#### `lib/main.dart`
 
-#### [NEW] lib/views/puzzle_form.dart
+#### `lib/views/puzzle_form.dart`
 
-#### [NEW] lib/views/puzzle_results.dart
-
----
+#### `lib/views/puzzle_results.dart`
 
 ### 4. Delete Obsolete Dependencies and React Stack
 
-- Drop the Vite build process.
-- Remove all Node toolchain dependencies along with [server.ts](file:///home/frank/dev/flutter/wordpuzzle/server.ts).
+- React/Vite/TypeScript app components were removed from the active app stack.
+- Deployment and runtime now rely on Flutter Web output served statically.
 
-#### [DELETE] src/
+#### Active stack files include
 
-#### [DELETE] index.html
+#### `lib/`
 
-#### [DELETE] vite.config.ts
+#### `web/`
 
-#### [DELETE] tsconfig.json
+#### `Dockerfile`
 
-#### [DELETE] package.json
+#### `docker-compose.yml`
 
-#### [DELETE] package-lock.json
-
-#### [DELETE] server.ts
-
-#### [MODIFY] README.md (Remove React references, add Flutter deployment instructions)
-
----
+#### `README.md`
 
 ### 5. Update Docker and Build Scripts
 
-- Update [Makefile](file:///home/frank/dev/flutter/wordpuzzle/Makefile) to use `make build` and `make test`.
-- Update [Dockerfile](file:///home/frank/dev/flutter/wordpuzzle/Dockerfile) and [docker-compose.yml](file:///home/frank/dev/flutter/wordpuzzle/docker-compose.yml) so that the app can be run locally using Docker Compose.
+- `Makefile` includes formatting, linting, web build, run, and test targets.
+- `Dockerfile` builds Flutter Web assets and serves them via Nginx.
+- `docker-compose.yml` exposes the containerized app on port `8080`.
 
-#### [MODIFY] Makefile
+#### `Makefile`
 
-#### [MODIFY] Dockerfile
+#### `Dockerfile`
 
-#### [MODIFY] docker-compose.yml
+#### `docker-compose.yml`
 
 ## Verification Plan
 
 ### Automated Tests
 
-- Write unit tests targeting the Dart solver service to verify dictionary lookups, filtering, and edge cases.
-- Write widget test ([test/widget_test.dart](file:///home/frank/dev/flutter/wordpuzzle/test/widget_test.dart)) to verify structural separation and form validations.
-- Run tests via `make test`.
+- Widget and integration tests exist under `test/`.
+- Run tests via `make test` or `flutter test`.
 
 ### Manual Verification
 
 - Build using `make build`.
-- Start the application using Docker Compose (`docker-compose up`).
-- Use the web interface to manually submit standard anagrams/letter combinations and visual-check the styling mapping to Material recommendations.
+- Start the application using Docker Compose (`docker compose up --build`).
+- Use the web interface to manually submit standard anagrams/letter combinations
+  and visual-check the styling mapping to Material recommendations.

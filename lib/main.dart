@@ -39,29 +39,45 @@ class PuzzleScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Word Puzzle Solver')),
-      body: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Left side: Form
-          const Expanded(
-            flex: 1,
-            child: SingleChildScrollView(
-              padding: EdgeInsets.all(24.0),
-              child: PuzzleForm(),
-            ),
-          ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isNarrowLayout = constraints.maxWidth < 900;
 
-          // Divider
-          const VerticalDivider(width: 1, thickness: 1),
+          final resultsPane = state.result.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : const PuzzleResults();
 
-          // Right side: Results
-          Expanded(
-            flex: 2,
-            child: state.result.isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : const PuzzleResults(),
-          ),
-        ],
+          if (isNarrowLayout) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Expanded(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.all(16.0),
+                    child: PuzzleForm(),
+                  ),
+                ),
+                const Divider(height: 1, thickness: 1),
+                Expanded(flex: 2, child: resultsPane),
+              ],
+            );
+          }
+
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Expanded(
+                flex: 1,
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(24.0),
+                  child: PuzzleForm(),
+                ),
+              ),
+              const VerticalDivider(width: 1, thickness: 1),
+              Expanded(flex: 2, child: resultsPane),
+            ],
+          );
+        },
       ),
     );
   }

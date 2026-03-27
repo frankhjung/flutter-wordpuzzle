@@ -34,7 +34,7 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
         repeats: currentRepeats,
       );
       notifier.solve();
-      // On mobile layouts, scroll down or close keyboard
+      // Close the active input after submitting in browser contexts.
       FocusScope.of(context).unfocus();
     }
   }
@@ -82,8 +82,8 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
               if (value.length < 6) {
                 return 'Must provide at least 6 letters';
               }
-              if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
-                return 'Only alphabet characters allowed';
+              if (!RegExp(r'^[a-z]+$').hasMatch(value)) {
+                return 'Only lowercase alphabet characters allowed';
               }
               return null;
             },
@@ -102,8 +102,8 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
               if (value == null || int.tryParse(value) == null) {
                 return 'Please enter a valid number';
               }
-              if (int.parse(value) < 1) {
-                return 'Size must be at least 1';
+              if (int.parse(value) < 4) {
+                return 'Size must be at least 4';
               }
               return null;
             },

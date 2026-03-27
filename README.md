@@ -1,6 +1,6 @@
 # Word Puzzle Solver
 
-This repository contains a local word-puzzle solver deployed as a Pure Flutter
+This repository contains a local word-puzzle solver deployed as a pure Flutter
 Web app.
 
 ## Architecture Overview
@@ -57,15 +57,14 @@ sequenceDiagram
 
 ## Sample Puzzle
 
-The puzzle consists of a set of letters and a list of word lengths. The goal is
-to find all valid words that can be formed using the given letters and match the
-specified lengths.
+The puzzle consists of one mandatory letter, additional allowed letters, a
+minimum word size, and an optional repeat-letters rule. The goal is to find all
+valid words that satisfy these constraints.
 
-- **Letters**: `mitncao` - here `m` is mandatory and must be included in every
-  word)
-- **Word Lengths**: `4, 5, 6, 7,...` - 4 more letters in each word
-- **Allow Repeating Letters**: Yes - each letter can be used multiple times in a
-  word
+- **Mandatory Letter**: `m` (must appear in every word)
+- **Other Letters**: `itncao`
+- **Minimum Word Size**: `4`
+- **Allow Repeating Letters**: Yes
 - **Dictionary**: A standard English dictionary is used to validate the words.
 
 ![Spelling Bee sample puzzle](docs/example-spelling-bee.png)
@@ -74,10 +73,10 @@ specified lengths.
 
 See project notes in [docs/](docs/)
 
-- [Initial Application Requirements](docs/app-requirements.md)
+- [Initial Application Requirements (historical, pre-refactor)](docs/app-requirements.md)
 - [Application Deliverables](docs/app-deliverables.md)
-- [Refactoring Requirements](docs/refactoring-requirements.md)
-- [Refactoring Implementation](docs/refactoring-implementation.md)
+- [Refactoring Requirements](docs/refactor-requirements.md)
+- [Refactoring Implementation](docs/refactor-implementation-plan.md)
 - [Changes](docs/changes.md)
 
 ## Quick Start
@@ -115,12 +114,9 @@ To start the project locally with the bundled Nginx server:
 ```bash
 # Docker Compose v2 (recommended)
 docker compose up --build
-
-# Or legacy Docker Compose (older installations)
-docker-compose up --build
 ```
 
-The web UI will be served at `http://localhost:8080`.mitncao
+The web UI will be served at `http://localhost:8080`.
 
 #### Docker build tips
 
@@ -148,7 +144,11 @@ From the repository root:
 make run
 ```
 
+Note: Type `q` to quit the session.
+
 This defaults to running the Flutter app in Chrome.
+
+This project targets the web only.
 
 ## Build
 
@@ -159,6 +159,9 @@ make build
 ```
 
 This compiles the Flutter app into web assets in `build/web`.
+
+Note: `make build` uses `flutter build web --base-href /flutter-wordpuzzle/`.
+For local root-path hosting, use `flutter build web`.
 
 ## Tests
 
@@ -171,5 +174,5 @@ make test
 ## Legacy Code
 
 The original TypeScript and React Node frontend codes have been completely
-removed. The current implementation relies entirely on a client-side Dart MVC
-architecture for both UI and the anagram solving logic.
+removed from the active app stack. The current implementation is a pure Flutter
+Web client with a client-side Dart solver and Riverpod-managed state.

@@ -1,5 +1,9 @@
 # Requirements
 
+> Historical note: this document captures the initial pre-refactor
+> requirements. The current implementation is documented in
+> `docs/refactor-requirements.md` and `docs/refactor-implementation-plan.md`.
+
 ## Personas
 
 You are an expert Flutter and React developer and DevOps engineer. Implement the
