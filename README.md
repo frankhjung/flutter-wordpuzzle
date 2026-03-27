@@ -3,6 +3,58 @@
 This repository contains a local word-puzzle solver deployed as a Pure Flutter
 Web app.
 
+## Architecture Overview
+
+### Component Diagram
+
+```mermaid
+flowchart LR
+  U[User Browser]
+
+  subgraph WebApp[Flutter Web App]
+    M[lib/main.dart]
+    P[lib/providers.dart]
+    F[views/puzzle_form.dart]
+    R[views/puzzle_results.dart]
+    PM[models/puzzle_model.dart]
+    S[services/solver_service.dart]
+    D[assets/dictionary.txt]
+  end
+
+  U --> M
+  M --> P
+  P --> F
+  P --> R
+  F --> PM
+  R --> PM
+  PM --> S
+  S --> D
+```
+
+### Web Rendering Flow
+
+```mermaid
+sequenceDiagram
+  participant B as Browser
+  participant I as web/index.html
+  participant JS as Flutter bootstrap JS
+  participant A as main.dart app
+  participant V as Puzzle views
+  participant SV as Solver service
+  participant DI as dictionary.txt
+
+  B->>I: Request app
+  I->>JS: Load Flutter runtime
+  JS->>A: Initialize and run app
+  A->>V: Build initial widget tree
+  B-->>V: User submits puzzle input
+  V->>SV: Request candidate words
+  SV->>DI: Read dictionary data
+  DI-->>SV: Return matching words
+  SV-->>V: Return solved results
+  V-->>B: Re-render results UI
+```
+
 ## Sample Puzzle
 
 The puzzle consists of a set of letters and a list of word lengths. The goal is
