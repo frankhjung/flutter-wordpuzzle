@@ -21,7 +21,10 @@ class SolverNotifier extends Notifier<SolverState> {
 
   @override
   SolverState build() {
-    return SolverState(input: PuzzleInput(letters: ''), result: PuzzleResult());
+    return SolverState(
+      input: PuzzleInput(letters: ''),
+      result: PuzzleResult(),
+    );
   }
 
   void updateInput({
@@ -61,9 +64,7 @@ class SolverNotifier extends Notifier<SolverState> {
   }
 }
 
-final solverServiceProvider = Provider<SolverService>(
-  (ref) => SolverService(),
-);
+final solverServiceProvider = Provider<SolverService>((ref) => SolverService());
 
 final solverProvider = NotifierProvider<SolverNotifier, SolverState>(
   SolverNotifier.new,
