@@ -1,10 +1,11 @@
 SHELL := /usr/bin/env bash
 
 FLUTTER_DEVICE ?= chrome
+WEB_BASE_HREF ?= /flutter-wordpuzzle/
 
 .DEFAULT_GOAL := default
 
-.PHONY: help format lint build test ci clean run
+.PHONY: help format lint build test ci clean run deps-upgrade-safe build-web
 
 help: ## Show available targets
 	@echo "Prerequisites:"
@@ -28,9 +29,9 @@ lint: ## Analyze Flutter code
 	@echo "Analyzing Flutter code..."
 	@flutter analyze
 
-build: ## Build Flutter web app
-	@echo "Building Flutter web app..."
-	@flutter build web --base-href /flutter-wordpuzzle/
+build: ## Build Flutter web app (JavaScript)
+	@echo "Building Flutter web app (JavaScript)..."
+	@flutter build web --base-href $(WEB_BASE_HREF) --no-wasm-dry-run
 
 run: ## Launch the Flutter app locally (default device: chrome)
 	@echo "Launching Flutter app on $(FLUTTER_DEVICE)..."
@@ -39,6 +40,14 @@ run: ## Launch the Flutter app locally (default device: chrome)
 test: ## Run Flutter unit/widget tests
 	@echo "Running Flutter tests..."
 	@flutter test
+
+deps-upgrade-safe: ## Check outdated deps and apply SDK-compatible upgrades
+	@echo "Checking outdated dependencies (before upgrade)..."
+	@flutter pub outdated
+	@echo "Applying dependency upgrades compatible with current SDK/constraints..."
+	@flutter pub upgrade
+	@echo "Checking outdated dependencies (after upgrade)..."
+	@flutter pub outdated
 
 ci: lint build test ## Run CI-style validation
 

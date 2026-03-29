@@ -97,6 +97,13 @@ From the repository root:
 flutter pub get
 ```
 
+To safely upgrade dependencies that are compatible with the current SDK and
+constraints:
+
+```bash
+make deps-upgrade-safe
+```
+
 ### Format
 
 From the repository root:
@@ -124,7 +131,7 @@ The web UI will be served at `http://localhost:8080`.
   the image's `prebuilt` target:
 
 ```bash
-flutter build web
+make build
 docker build --target prebuilt -t wordpuzzle .
 docker run -p 8080:80 wordpuzzle
 ```
@@ -158,10 +165,14 @@ From the repository root:
 make build
 ```
 
-This compiles the Flutter app into web assets in `build/web`.
+This compiles a JavaScript web build into `build/web`.
 
-Note: `make build` uses `flutter build web --base-href /flutter-wordpuzzle/`.
-For local root-path hosting, use `flutter build web`.
+The build target uses `--base-href /flutter-wordpuzzle/` by default. Override
+with:
+
+```bash
+make build WEB_BASE_HREF=/
+```
 
 ## Tests
 
@@ -170,6 +181,11 @@ To run the Flutter tests:
 ```bash
 make test
 ```
+
+## CI and Deployment
+
+- CI runs format checks, analysis, standard JS tests, JS web build.
+- GitHub Pages deployment (on `main`) publishes a **JS release** build.
 
 ## Legacy Code
 
