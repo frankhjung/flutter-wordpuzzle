@@ -13,8 +13,8 @@ flutter create --platforms=android .
 ```
 
 You can find general documentation for Flutter at: <https://docs.flutter.dev/>
-Detailed API documentation is available at: <https://api.flutter.dev/>
-If you prefer video documentation, consider: <https://www.youtube.com/c/flutterdev>
+Detailed API documentation is available at: <https://api.flutter.dev/> If you
+prefer video documentation, consider: <https://www.youtube.com/c/flutterdev>
 
 ```bash
 # download android studio
@@ -69,10 +69,11 @@ with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troublesh
 
 ## To Do
 
-Set up an Android Virtual Device (AVD), or connect a physical Android device via USB with USB Debugging enabled.
+Set up an Android Virtual Device (AVD), or connect a physical Android device via
+USB with USB Debugging enabled.
 
 ## Dependencies
-a
+
 * JDK: openjdk-21-jdk (Debian package) <https://openjdk.java.net/>
 * Android Studio: <https://developer.android.com/studio/>
 * Android SDK: <https://developer.android.com/tools/releases/platform-tools>
