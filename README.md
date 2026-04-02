@@ -114,7 +114,7 @@ make format
 dart format .
 ```
 
-### 1. Run via Docker Compose
+### Run via Docker Compose
 
 To start the project locally with the bundled Nginx server:
 
@@ -143,7 +143,7 @@ docker build -t wordpuzzle .
 docker run -p 8080:80 wordpuzzle
 ```
 
-### 2. Run the Flutter app locally
+### Run the Flutter app locally
 
 From the repository root:
 
@@ -180,6 +180,14 @@ To run the Flutter tests:
 
 ```bash
 make test
+```
+
+## Updates
+
+To update packages to the latest versions allowed by the current constraints:
+
+```bash
+make deps-upgrade-safe
 ```
 
 ## CI and Deployment
