@@ -1,12 +1,20 @@
 # Building an Andorid App for this project
 
+## Overview
+
+The intention here is to build a minimal Android app for this project.
+
+See [Build and release an Android app](https://share.google/zPr3c2MPu8KwMTXUY)
+
+## Setup
+
 Config for JDK 21
 
 ```bash
 flutter config --jdk-dir=/usr/lib/jvm/java-21-openjdk-amd64/
 ```
 
-Then prepape the Android app:
+Then prepare the Android app:
 
 ```bash
 flutter create --platforms=android .
@@ -63,8 +71,10 @@ Found 2 connected devices:
 
 Run "flutter emulators" to list and start any available device emulators.
 
-If you expected another device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices
-with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+If you expected another device to be detected, please run "flutter doctor" to
+diagnose potential issues. You may also try increasing the time to wait for
+connected devices with the "--device-timeout" flag. Visit
+https://flutter.dev/setup/ for troubleshooting tips.
 ```
 
 ## To Do
