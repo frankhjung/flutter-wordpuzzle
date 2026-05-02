@@ -6,15 +6,29 @@ import 'package:flutter_wordpuzzle/models/puzzle_model.dart';
 import 'package:flutter_wordpuzzle/services/solver_service.dart';
 
 void main() {
-  Future<void> waitForFinder(
+  /// Polls until every [finders] entry is non-empty, or fails with a clear
+  /// message on timeout.  Inside [tester.runAsync] the fake-async clock is
+  /// suspended, so we advance the widget tree with a zero-duration [pump]
+  /// then wait in real time with [Future.delayed] instead of relying on
+  /// [pump(duration)] to advance time.
+  Future<void> waitForFinders(
     WidgetTester tester,
-    Finder finder, {
+    List<Finder> finders, {
     int maxTicks = 200,
     Duration step = const Duration(milliseconds: 50),
   }) async {
     for (var i = 0; i < maxTicks; i++) {
-      if (finder.evaluate().isNotEmpty) return;
-      await tester.pump(step);
+      await tester.pump();
+      if (finders.every((f) => f.evaluate().isNotEmpty)) return;
+      await Future.delayed(step);
+    }
+    for (final finder in finders) {
+      if (finder.evaluate().isEmpty) {
+        fail(
+          'Timed out waiting for ${finder.description} '
+          'after ${maxTicks * step.inMilliseconds}ms',
+        );
+      }
     }
   }
 
@@ -52,11 +66,14 @@ void main() {
           await tester.pump();
 
           await tester.tap(find.text('Solve Puzzle'));
+          await tester.pump();
 
-          // Wait until the solver has returned all words and both groups are
-          // rendered in the widget tree before asserting.
-          await waitForFinder(tester, find.byKey(const Key('word-manic')));
-          await waitForFinder(tester, find.byKey(const Key('word-maniac')));
+          // Wait until the solver has returned all words; both word-manic and
+          // word-maniac must be in the widget tree before asserting.
+          await waitForFinders(tester, [
+            find.byKey(const Key('word-manic')),
+            find.byKey(const Key('word-maniac')),
+          ]);
 
           expect(find.byKey(const Key('word-manic')), findsOneWidget);
           expect(find.byKey(const Key('word-maniac')), findsOneWidget);
