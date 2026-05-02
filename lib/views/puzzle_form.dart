@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers.dart';
 
@@ -26,12 +27,10 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
       final notifier = ref.read(solverProvider.notifier);
-      final currentRepeats = ref.read(solverProvider).input.repeats;
       notifier.updateInput(
         letters: _mandatoryController.text.toLowerCase() +
             _lettersController.text.toLowerCase(),
         size: int.parse(_sizeController.text),
-        repeats: currentRepeats,
       );
       notifier.solve();
       // Close the active input after submitting in browser contexts.
@@ -41,6 +40,8 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
 
   @override
   Widget build(BuildContext context) {
+    final repeats = ref.watch(solverProvider.select((s) => s.input.repeats));
+
     return Form(
       key: _formKey,
       child: Column(
@@ -54,15 +55,19 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
             decoration: const InputDecoration(
               labelText: 'Mandatory letter',
               border: OutlineInputBorder(),
+              hintText: 'e.g. m',
             ),
             maxLength: 1,
             textInputAction: TextInputAction.next,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]')),
+            ],
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter a letter';
               }
-              if (!RegExp(r'^[a-z]$').hasMatch(value)) {
-                return 'Only lowercase alphabet characters allowed';
+              if (!RegExp(r'^[a-zA-Z]$').hasMatch(value)) {
+                return 'Only alphabet characters allowed';
               }
               return null;
             },
@@ -77,6 +82,9 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
               border: OutlineInputBorder(),
             ),
             textInputAction: TextInputAction.next,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]')),
+            ],
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter letters';
@@ -84,8 +92,8 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
               if (value.length < 6) {
                 return 'Must provide at least 6 letters';
               }
-              if (!RegExp(r'^[a-z]+$').hasMatch(value)) {
-                return 'Only lowercase alphabet characters allowed';
+              if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
+                return 'Only alphabet characters allowed';
               }
               return null;
             },
@@ -100,6 +108,9 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.done,
             onFieldSubmitted: (_) => _submit(),
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+            ],
             validator: (value) {
               if (value == null || int.tryParse(value) == null) {
                 return 'Please enter a valid number';
@@ -114,7 +125,8 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
           SwitchListTile(
             key: const Key('repeats-toggle'),
             title: const Text('Allow repeating letters?'),
-            value: ref.watch(solverProvider).input.repeats,
+            subtitle: const Text('Required for games like Spelling Bee'),
+            value: repeats,
             onChanged: (bool value) {
               ref.read(solverProvider.notifier).updateInput(repeats: value);
             },

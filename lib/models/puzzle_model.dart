@@ -10,6 +10,20 @@ class PuzzleInput {
     this.repeats = true,
     this.dictionaryPath = 'assets/dictionary.txt',
   });
+
+  PuzzleInput copyWith({
+    String? letters,
+    int? size,
+    bool? repeats,
+    String? dictionaryPath,
+  }) {
+    return PuzzleInput(
+      letters: letters ?? this.letters,
+      size: size ?? this.size,
+      repeats: repeats ?? this.repeats,
+      dictionaryPath: dictionaryPath ?? this.dictionaryPath,
+    );
+  }
 }
 
 class WordGroup {
@@ -19,28 +33,27 @@ class WordGroup {
 }
 
 class PuzzleResult {
-  final List<String> words;
+  final List<WordGroup> groups;
   final String? error;
   final bool isLoading;
 
-  PuzzleResult({this.words = const [], this.error, this.isLoading = false});
+  PuzzleResult({this.groups = const [], this.error, this.isLoading = false});
 
-  List<WordGroup> get groupedWords {
-    if (words.isEmpty) return [];
-    final Map<int, List<String>> groups = {};
-    for (var word in words) {
-      final len = word.length;
-      groups.putIfAbsent(len, () => []).add(word);
-    }
-    final sortedKeys = groups.keys.toList()..sort((a, b) => b.compareTo(a));
-    return sortedKeys
-        .map((len) => WordGroup(length: len, words: groups[len]!))
-        .toList();
-  }
+  /// Total count of words across all groups.
+  int get totalWords =>
+      groups.fold(0, (sum, group) => sum + group.words.length);
 
-  PuzzleResult copyWith({List<String>? words, String? error, bool? isLoading}) {
+  /// Checks if a specific word is present in any group.
+  bool contains(String word) =>
+      groups.any((group) => group.words.contains(word));
+
+  PuzzleResult copyWith({
+    List<WordGroup>? groups,
+    String? error,
+    bool? isLoading,
+  }) {
     return PuzzleResult(
-      words: words ?? this.words,
+      groups: groups ?? this.groups,
       error: error,
       isLoading: isLoading ?? this.isLoading,
     );

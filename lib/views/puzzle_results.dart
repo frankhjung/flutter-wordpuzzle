@@ -38,7 +38,7 @@ class PuzzleResults extends ConsumerWidget {
       );
     }
 
-    if (result.words.isEmpty) {
+    if (result.groups.isEmpty) {
       if (input.letters.isEmpty) {
         return const Center(
           child: Text('Enter letters and submit to solve the puzzle.'),
@@ -50,42 +50,55 @@ class PuzzleResults extends ConsumerWidget {
       }
     }
 
-    final groupedWords = result.groupedWords;
     final mandatoryLetter =
         input.letters.isNotEmpty ? input.letters[0].toLowerCase() : '';
 
-    return ListView(
-      padding: const EdgeInsets.all(16.0),
-      children: groupedWords.map((group) {
-        final length = group.length;
-        final words = group.words;
-
-        return Card(
-          margin: const EdgeInsets.only(bottom: 16.0),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '$length-Letter Words (${words.length})',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                const SizedBox(height: 12),
-                Wrap(
-                  spacing: 8.0,
-                  runSpacing: 8.0,
-                  children: words.map((word) {
-                    return _buildWordChip(context, word, mandatoryLetter);
-                  }).toList(),
-                ),
-              ],
-            ),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            'Found ${result.totalWords} words',
+            style: Theme.of(context).textTheme.titleMedium,
           ),
-        );
-      }).toList(),
+        ),
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            children: result.groups.map((group) {
+              final length = group.length;
+              final words = group.words;
+
+              return Card(
+                margin: const EdgeInsets.only(bottom: 16.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '$length-Letter Words (${words.length})',
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                      ),
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8.0,
+                        runSpacing: 8.0,
+                        children: words.map((word) {
+                          return _buildWordChip(context, word, mandatoryLetter);
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
     );
   }
 
