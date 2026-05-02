@@ -69,6 +69,15 @@
 12. Add mandatory field for the puzzle input.
 13. Hide dictionary field.
 14. Enable "Allow repeating letters?" as the default (i.e. set to true).
+15. Offload solver computation to a background isolate using `compute` to ensure
+    smooth UI performance.
+16. Optimise dictionary filtering by pre-calculating letter counts and
+    pre-grouping results by length in the service layer.
+17. Refine data models (`PuzzleInput`, `PuzzleResult`) with `copyWith` and
+    structured storage.
+18. Enhance UI/UX with `TextInputFormatter`s for better input control and real-
+    time validation.
+19. Add total word count display in the results view.
 
 ## To Do
 

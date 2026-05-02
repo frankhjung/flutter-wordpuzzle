@@ -36,24 +36,32 @@ flowchart LR
 ```mermaid
 sequenceDiagram
   participant B as Browser
-  participant I as web/index.html
-  participant JS as Flutter bootstrap JS
-  participant A as main.dart app
   participant V as Puzzle views
-  participant SV as Solver service
+  participant SV as Solver service (Main)
+  participant SI as Solver Isolate
   participant DI as dictionary.txt
 
-  B->>I: Request app
-  I->>JS: Load Flutter runtime
-  JS->>A: Initialize and run app
-  A->>V: Build initial widget tree
   B-->>V: User submits puzzle input
   V->>SV: Request candidate words
   SV->>DI: Read dictionary data
-  DI-->>SV: Return matching words
-  SV-->>V: Return solved results
+  DI-->>SV: Return dictionary
+  SV->>SI: Offload filtering (compute)
+  SI-->>SV: Return sorted/grouped results
+  SV-->>V: Update state (Riverpod)
   V-->>B: Re-render results UI
 ```
+
+## Performance & Optimization
+
+- **Background Solving**: Heavy dictionary filtering and sorting are offloaded
+  to a background isolate using Flutter's `compute` function, ensuring the UI
+  thread remains responsive.
+- **Optimised Algorithm**: Pre-calculates letter counts for puzzles without
+  repeats to speed up dictionary filtering.
+- **Structured Data**: Results are pre-grouped by word length in the service
+  layer to reduce UI-thread computation.
+- **Input Control**: Uses `TextInputFormatter`s for real-time validation and
+  keyboard-level input restriction.
 
 ## Sample Puzzle
 
