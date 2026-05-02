@@ -26,12 +26,13 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
       final notifier = ref.read(solverProvider.notifier);
-      final currentRepeats = ref.read(solverProvider).input.repeats;
+      final input = ref.read(solverProvider).input;
       notifier.updateInput(
         letters: _mandatoryController.text.toLowerCase() +
             _lettersController.text.toLowerCase(),
         size: int.parse(_sizeController.text),
-        repeats: currentRepeats,
+        repeats: input.repeats,
+        startsWithMandatory: input.startsWithMandatory,
       );
       notifier.solve();
       // Close the active input after submitting in browser contexts.
@@ -110,10 +111,22 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
           ),
           const SizedBox(height: 16),
           SwitchListTile(
+            key: const Key('repeats-toggle'),
             title: const Text('Allow repeating letters?'),
             value: ref.watch(solverProvider).input.repeats,
             onChanged: (bool value) {
               ref.read(solverProvider.notifier).updateInput(repeats: value);
+            },
+            contentPadding: EdgeInsets.zero,
+          ),
+          SwitchListTile(
+            key: const Key('starts-with-toggle'),
+            title: const Text('Words must start with mandatory letter?'),
+            value: ref.watch(solverProvider).input.startsWithMandatory,
+            onChanged: (bool value) {
+              ref
+                  .read(solverProvider.notifier)
+                  .updateInput(startsWithMandatory: value);
             },
             contentPadding: EdgeInsets.zero,
           ),

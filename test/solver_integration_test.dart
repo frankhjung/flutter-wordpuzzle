@@ -51,7 +51,15 @@ void main() {
           await tester.enterText(otherLettersField, 'itncao');
           await tester.pump();
 
+          // Enable "words must start with mandatory letter" to produce a
+          // shorter, more deterministic result list.
+          await tester.tap(find.byKey(const Key('starts-with-toggle')));
+          await tester.pump();
+
           await tester.tap(find.text('Solve Puzzle'));
+
+          // Wait until the solver has returned ALL words (both groups).
+          await waitForFinder(tester, find.byKey(const Key('word-manic')));
           await waitForFinder(tester, find.byKey(const Key('word-maniac')));
 
           expect(find.byKey(const Key('word-manic')), findsOneWidget);
