@@ -61,12 +61,7 @@ class SolverService {
       // 2. Must contain the mandatory letter
       if (!wordLower.contains(mandatoryLetter)) return false;
 
-      // 3. Optionally restrict to words that start with the mandatory letter
-      if (input.startsWithMandatory && !wordLower.startsWith(mandatoryLetter)) {
-        return false;
-      }
-
-      // 4. Must only use provided letters
+      // 3. Must only use provided letters
       final wordLetters = wordLower.split('');
 
       if (input.repeats) {

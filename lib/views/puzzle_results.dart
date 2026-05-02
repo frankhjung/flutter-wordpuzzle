@@ -54,11 +54,9 @@ class PuzzleResults extends ConsumerWidget {
     final mandatoryLetter =
         input.letters.isNotEmpty ? input.letters[0].toLowerCase() : '';
 
-    return ListView.builder(
+    return ListView(
       padding: const EdgeInsets.all(16.0),
-      itemCount: groupedWords.length,
-      itemBuilder: (context, index) {
-        final group = groupedWords[index];
+      children: groupedWords.map((group) {
         final length = group.length;
         final words = group.words;
 
@@ -87,7 +85,7 @@ class PuzzleResults extends ConsumerWidget {
             ),
           ),
         );
-      },
+      }).toList(),
     );
   }
 

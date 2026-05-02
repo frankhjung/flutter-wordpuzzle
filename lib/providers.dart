@@ -31,7 +31,6 @@ class SolverNotifier extends Notifier<SolverState> {
     String? letters,
     int? size,
     bool? repeats,
-    bool? startsWithMandatory,
     String? dictionaryPath,
   }) {
     state = state.copyWith(
@@ -39,8 +38,6 @@ class SolverNotifier extends Notifier<SolverState> {
         letters: letters ?? state.input.letters,
         size: size ?? state.input.size,
         repeats: repeats ?? state.input.repeats,
-        startsWithMandatory:
-            startsWithMandatory ?? state.input.startsWithMandatory,
         dictionaryPath: dictionaryPath ?? state.input.dictionaryPath,
       ),
     );

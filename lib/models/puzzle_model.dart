@@ -2,14 +2,12 @@ class PuzzleInput {
   final String letters;
   final int size;
   final bool repeats;
-  final bool startsWithMandatory;
   final String dictionaryPath;
 
   PuzzleInput({
     required this.letters,
     this.size = 4,
     this.repeats = true,
-    this.startsWithMandatory = false,
     this.dictionaryPath = 'assets/dictionary.txt',
   });
 }
