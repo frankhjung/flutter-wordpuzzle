@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_wordpuzzle/main.dart';
 import 'package:flutter_wordpuzzle/models/puzzle_model.dart';
 import 'package:flutter_wordpuzzle/services/solver_service.dart';
@@ -25,7 +26,7 @@ void main() {
     for (final finder in finders) {
       if (finder.evaluate().isEmpty) {
         fail(
-          'Timed out waiting for ${finder.describeMatch((_) => finder.toString())} '
+          'Timed out waiting for ${finder.describeMatch(Plurality.one)} '
           'after ${maxTicks * step.inMilliseconds}ms',
         );
       }
@@ -36,12 +37,12 @@ void main() {
     testWidgets(
       'With letters "mitncao" and repeats ENABLED: finds both "manic" and "maniac"',
       (WidgetTester tester) async {
-        tester.view.physicalSize = const Size(1200, 1200);
+        tester.view.physicalSize = const Size(1200, 8000);
         tester.view.devicePixelRatio = 1.0;
         addTearDown(() => tester.view.resetPhysicalSize());
 
         await tester.runAsync(() async {
-          await tester.pumpWidget(const MyApp());
+          await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
           // Ensure the form is present.
           await tester.pump();
@@ -53,9 +54,9 @@ void main() {
           await tester.enterText(otherLettersField, 'itncao');
           await tester.pump();
 
-          // Explicitly enable repeats.
-          await tester.tap(find.byKey(const Key('repeats-toggle')));
-          await tester.pump();
+          // Ensure repeats are enabled (it defaults to true, so no need to tap unless it's false).
+          final switchFinder = find.byType(Switch);
+          expect(tester.widget<Switch>(switchFinder).value, isTrue);
 
           await tester.tap(find.text('Solve Puzzle'));
           await tester.pump();
@@ -72,16 +73,17 @@ void main() {
     );
   });
 
-  test('repeats-enabled solver returns both manic and maniac', () {
+  test('repeats-enabled solver returns both manic and maniac', () async {
     final solver = SolverService();
-    final input = PuzzleInput.fromStrings(
-      mandatoryLetter: 'm',
-      otherLetters: 'itncao',
+    final input = PuzzleInput(
+      letters: 'mitncao',
+      size: 4,
       repeats: true,
+      dictionaryPath: 'assets/dictionary.txt',
     );
 
-    final result = solver.solve(input);
-    expect(result.contains('manic'), isTrue);
-    expect(result.contains('maniac'), isTrue);
+    final result = await solver.solve(input);
+    expect(result.words.contains('manic'), isTrue);
+    expect(result.words.contains('maniac'), isTrue);
   });
 }

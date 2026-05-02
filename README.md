@@ -184,10 +184,25 @@ make test
 
 ## Updates
 
+To check for outdated packages:
+
+```bash
+flutter pub outdated
+```
+
 To update packages to the latest versions allowed by the current constraints:
 
 ```bash
 make deps-upgrade-safe
+# or
+flutter pub upgrade
+```
+
+To update all packages to their newest major versions (this updates
+`pubspec.yaml`):
+
+```bash
+flutter pub upgrade --major-versions
 ```
 
 ## CI and Deployment

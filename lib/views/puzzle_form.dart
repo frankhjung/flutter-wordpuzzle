@@ -49,6 +49,7 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
           Text('Puzzle Input', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 16),
           TextFormField(
+            key: const Key('mandatory-letter'),
             controller: _mandatoryController,
             decoration: const InputDecoration(
               labelText: 'Mandatory letter',
@@ -68,6 +69,7 @@ class _PuzzleFormState extends ConsumerState<PuzzleForm> {
           ),
           const SizedBox(height: 16),
           TextFormField(
+            key: const Key('other-letters'),
             controller: _lettersController,
             decoration: const InputDecoration(
               labelText: 'Other Letters (e.g. bcdefg)',
