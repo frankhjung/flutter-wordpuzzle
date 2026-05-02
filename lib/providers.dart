@@ -34,11 +34,11 @@ class SolverNotifier extends Notifier<SolverState> {
     String? dictionaryPath,
   }) {
     state = state.copyWith(
-      input: PuzzleInput(
-        letters: letters ?? state.input.letters,
-        size: size ?? state.input.size,
-        repeats: repeats ?? state.input.repeats,
-        dictionaryPath: dictionaryPath ?? state.input.dictionaryPath,
+      input: state.input.copyWith(
+        letters: letters,
+        size: size,
+        repeats: repeats,
+        dictionaryPath: dictionaryPath,
       ),
     );
   }
@@ -47,6 +47,8 @@ class SolverNotifier extends Notifier<SolverState> {
     state = state.copyWith(result: state.result.copyWith(isLoading: true));
 
     try {
+      // Background offloading using compute.
+      // This helps keep the UI thread free during heavy dictionary filtering.
       final result = await _solverService.solve(state.input);
       state = state.copyWith(result: result);
     } catch (e) {

@@ -83,7 +83,7 @@ void main() {
     );
 
     final result = await solver.solve(input);
-    expect(result.words.contains('manic'), isTrue);
-    expect(result.words.contains('maniac'), isTrue);
+    expect(result.contains('manic'), isTrue);
+    expect(result.contains('maniac'), isTrue);
   });
 }

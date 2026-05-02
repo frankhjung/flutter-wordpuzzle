@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import '../models/puzzle_model.dart';
 
@@ -39,12 +40,23 @@ class SolverService {
       return PuzzleResult(error: 'Dictionary is empty or failed to load.');
     }
 
+    // Offload the heavy filtering and sorting to a background isolate.
+    // This keeps the UI thread responsive.
+    return compute(_solveInIsolate, _SolveTask(input, _dictionaryWords!));
+  }
+
+  static PuzzleResult _solveInIsolate(_SolveTask task) {
+    return _solveInternal(task.input, task.dictionary);
+  }
+
+  static PuzzleResult _solveInternal(
+    PuzzleInput input,
+    List<String> dictionary,
+  ) {
     final inputLetters = input.letters.toLowerCase();
     final mandatoryLetter = inputLetters[0];
     final availableLetters = inputLetters.split('');
 
-    // Pre-calculate the letter counts if repeats are not allowed.
-    // This is more efficient than doing it for every word in the dictionary.
     final Map<String, int> availableLetterCounts = {};
     if (!input.repeats) {
       for (var l in availableLetters) {
@@ -52,24 +64,20 @@ class SolverService {
       }
     }
 
-    final solvedWords = _dictionaryWords!.where((word) {
+    final solvedWords = dictionary.where((word) {
       final wordLower = word.toLowerCase();
 
-      // 1. Minimum size
       if (wordLower.length < input.size) return false;
-
-      // 2. Must contain the mandatory letter
       if (!wordLower.contains(mandatoryLetter)) return false;
 
-      // 3. Must only use provided letters
       final wordLetters = wordLower.split('');
 
       if (input.repeats) {
+        // Use a Set for O(1) lookup if availableLetters is large,
+        // but for 7 letters split('').contains is fine.
         return wordLetters.every((l) => availableLetters.contains(l));
       } else {
-        // Create a copy of the pre-calculated counts for this word check.
         final counts = Map<String, int>.from(availableLetterCounts);
-
         for (var l in wordLetters) {
           if (!counts.containsKey(l) || counts[l]! <= 0) return false;
           counts[l] = counts[l]! - 1;
@@ -85,6 +93,24 @@ class SolverService {
       return a.compareTo(b);
     });
 
-    return PuzzleResult(words: solvedWords);
+    // Grouping logic moved here
+    final Map<int, List<String>> groups = {};
+    for (var word in solvedWords) {
+      final len = word.length;
+      groups.putIfAbsent(len, () => []).add(word);
+    }
+
+    final sortedKeys = groups.keys.toList()..sort((a, b) => b.compareTo(a));
+    final wordGroups = sortedKeys
+        .map((len) => WordGroup(length: len, words: groups[len]!))
+        .toList();
+
+    return PuzzleResult(groups: wordGroups);
   }
+}
+
+class _SolveTask {
+  final PuzzleInput input;
+  final List<String> dictionary;
+  _SolveTask(this.input, this.dictionary);
 }
