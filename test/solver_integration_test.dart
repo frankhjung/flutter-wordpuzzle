@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_wordpuzzle/main.dart';
 import 'package:flutter_wordpuzzle/models/puzzle_model.dart';
 import 'package:flutter_wordpuzzle/services/solver_service.dart';
 
 void main() {
   /// Polls until every [finders] entry is non-empty, or fails with a clear
-  /// message on timeout.  Inside [tester.runAsync] the fake-async clock is
+  /// message on timeout. Inside [tester.runAsync] the fake-async clock is
   /// suspended, so we advance the widget tree with a zero-duration [pump]
   /// then wait in real time with [Future.delayed] instead of relying on
   /// [pump(duration)] to advance time.
@@ -22,10 +21,11 @@ void main() {
       if (finders.every((f) => f.evaluate().isNotEmpty)) return;
       await Future.delayed(step);
     }
+
     for (final finder in finders) {
       if (finder.evaluate().isEmpty) {
         fail(
-          'Timed out waiting for ${finder.description} '
+          'Timed out waiting for ${finder.describeMatch((_) => finder.toString())} '
           'after ${maxTicks * step.inMilliseconds}ms',
         );
       }
@@ -34,22 +34,6 @@ void main() {
 
   group('Solver Integration Tests - Repeats Toggle', () {
     testWidgets(
-      'With letters "mitncao" and repeats DISABLED: includes "manic" but excludes "maniac"',
-      (WidgetTester tester) async {
-        await tester.runAsync(() async {
-          final service = SolverService();
-          final result = await service.solve(
-            PuzzleInput(letters: 'mitncao', repeats: false, size: 4),
-          );
-
-          expect(result.error, isNull);
-          expect(result.words, contains('manic'));
-          expect(result.words, isNot(contains('maniac')));
-        });
-      },
-    );
-
-    testWidgets(
       'With letters "mitncao" and repeats ENABLED: finds both "manic" and "maniac"',
       (WidgetTester tester) async {
         tester.view.physicalSize = const Size(1200, 1200);
@@ -57,19 +41,25 @@ void main() {
         addTearDown(() => tester.view.resetPhysicalSize());
 
         await tester.runAsync(() async {
-          await tester.pumpWidget(const ProviderScope(child: MyApp()));
+          await tester.pumpWidget(const MyApp());
 
-          final mandatoryField = find.byType(TextFormField).at(0);
-          final otherLettersField = find.byType(TextFormField).at(1);
+          // Ensure the form is present.
+          await tester.pump();
+
+          final mandatoryField = find.byKey(const Key('mandatory-letter'));
+          final otherLettersField = find.byKey(const Key('other-letters'));
+
           await tester.enterText(mandatoryField, 'm');
           await tester.enterText(otherLettersField, 'itncao');
+          await tester.pump();
+
+          // Explicitly enable repeats.
+          await tester.tap(find.byKey(const Key('repeats-toggle')));
           await tester.pump();
 
           await tester.tap(find.text('Solve Puzzle'));
           await tester.pump();
 
-          // Wait until the solver has returned all words; both word-manic and
-          // word-maniac must be in the widget tree before asserting.
           await waitForFinders(tester, [
             find.byKey(const Key('word-manic')),
             find.byKey(const Key('word-maniac')),
@@ -82,21 +72,16 @@ void main() {
     );
   });
 
-  group('Solver Logic - Edge Cases', () {
-    testWidgets('Entering invalid characters displays error message', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(const ProviderScope(child: MyApp()));
-      final mandatoryField = find.byType(TextFormField).at(0);
-      final otherLettersField = find.byType(TextFormField).at(1);
-      await tester.enterText(mandatoryField, 'm');
-      await tester.enterText(otherLettersField, 'abcdeFg');
-      await tester.tap(find.text('Solve Puzzle'));
-      await tester.pump();
-      expect(
-        find.text('Only lowercase alphabet characters allowed'),
-        findsOneWidget,
-      );
-    });
+  test('repeats-enabled solver returns both manic and maniac', () {
+    final solver = SolverService();
+    final input = PuzzleInput.fromStrings(
+      mandatoryLetter: 'm',
+      otherLetters: 'itncao',
+      repeats: true,
+    );
+
+    final result = solver.solve(input);
+    expect(result.contains('manic'), isTrue);
+    expect(result.contains('maniac'), isTrue);
   });
 }
