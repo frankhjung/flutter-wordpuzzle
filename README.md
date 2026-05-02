@@ -205,6 +205,25 @@ To update all packages to their newest major versions (this updates
 flutter pub upgrade --major-versions
 ```
 
+### Transitive Dependencies
+
+Transitive dependencies are packages that your direct dependencies rely on.
+When you run `flutter pub upgrade` (or `make deps-upgrade-safe`), Flutter
+automatically updates all packages, including transitive ones, to the newest
+versions that satisfy the constraints set by your direct dependencies.
+
+To see if any transitive dependencies have newer versions available:
+
+```bash
+flutter pub outdated --transitive
+```
+
+**Note on forcing updates:** It is generally not advisable to force transitive
+dependencies to upgrade past their allowed constraints (e.g., using a
+`dependency_overrides` block in `pubspec.yaml`). Doing so means your direct
+dependencies will run against package versions they weren't tested with, which
+frequently leads to build errors or breaking changes.
+
 ## CI and Deployment
 
 - CI runs format checks, analysis, standard JS tests, JS web build.

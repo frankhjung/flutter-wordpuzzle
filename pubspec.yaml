@@ -1,6 +1,6 @@
 name: flutter_wordpuzzle
 description: Solve Word Puzzles UI (Flutter).
-version: 0.0.3
+version: 0.0.4
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -8,7 +8,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.9
   flutter_riverpod: ^3.3.1
 
 dev_dependencies:
